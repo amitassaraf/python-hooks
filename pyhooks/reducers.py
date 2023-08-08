@@ -1,6 +1,6 @@
 from typing import Any, Callable
 
-from hooks import use_state
+from .hooks import use_state
 
 
 def __dispatch_factory(
@@ -52,7 +52,7 @@ def __dispatch_factory(
 def use_reducer(
     reducer: Callable[[dict, dict], dict],
     initial_state: dict,
-    middleware: list[Callable[[dict, Callable, dict], dict]],
+    middleware: list[Callable[[dict, Callable, dict], dict]] = None,
 ) -> (dict, Callable[[dict], dict]):
     """
     Create a reducer hook. The reducer will be called when the dispatch function is called.
@@ -62,4 +62,4 @@ def use_reducer(
     :return: The state and the dispatch function
     """
     state, set_state = use_state(initial_state)
-    return state, __dispatch_factory(reducer, state, set_state, middleware)
+    return state, __dispatch_factory(reducer, state, set_state, middleware or [])

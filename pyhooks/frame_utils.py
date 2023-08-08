@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from types import FrameType
-from typing import Any, Callable, Tuple, Type, Union
+from types import FrameType, FunctionType, MethodType
+from typing import Any, Callable
 
 import inspect
 import sys
 
-from store import Store, _get_current_store, python_object_store_factory
+from .store import Store, _get_current_store, python_object_store_factory
+
+SPECIAL_HOOKS = ["create_context"]
 
 
 def __identify_function_and_owner(frame: FrameType) -> tuple[Callable | None, Any]:
@@ -18,11 +20,22 @@ def __identify_function_and_owner(frame: FrameType) -> tuple[Callable | None, An
     """
     at: dict[str, Any] = {**frame.f_globals, **frame.f_locals}
     value: Any = None
-    for part in frame.f_code.co_qualname.split(".")[:-1]:
-        for name, value in at.items():
-            if name == part:
-                at = value.__dict__
-                break
+    if hasattr(frame.f_code, "co_qualname"):
+        for part in frame.f_code.co_qualname.split(".")[:-1]:
+            for name, value in at.items():
+                if name == part:
+                    at = value.__dict__
+                    break
+    else:
+        caller_name = frame.f_code.co_name
+        # In the case we cannot find the owner using the qualname which is safest, we try to find the owner using the
+        # function args. This is not safe because the function args can be anything, but it is better than nothing.
+        arg_info = inspect.getargvalues(frame)
+        for arg, arg_value in arg_info.locals.items():
+            if hasattr(arg_value, caller_name) and isinstance(
+                getattr(arg_value, caller_name), (FunctionType, MethodType)
+            ):
+                return getattr(arg_value, caller_name), arg_value
     return at.get(frame.f_code.co_name, None), value
 
 
@@ -57,7 +70,10 @@ def __identify_hook_and_store(
     frame = sys._getframe().f_back.f_back
     identifier_prefix = ""
     # Skip all hook functions in order to identify the function that called the hook
-    while frame.f_code.co_name.startswith("use_"):
+    while (
+        frame.f_code.co_name.startswith("use_")
+        and frame.f_code.co_name not in SPECIAL_HOOKS
+    ):
         # We add a prefix to the identifier to ensure that the identifier is unique and that we can use hooks inside
         # hooks
         identifier_prefix += __frame_parts_to_identifier(*inspect.getframeinfo(frame))
@@ -67,7 +83,7 @@ def __identify_hook_and_store(
     is_class_method = isinstance(caller_function, classmethod)
     is_method = owner is not None and not is_static_method and not is_class_method
 
-    if is_method or is_class_method:
+    if (is_method or is_class_method) and getattr(owner, "__class__", None) == type:
         for _, value in frame.f_locals.items():
             if isinstance(value, owner):
                 owner = value

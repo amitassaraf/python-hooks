@@ -1,7 +1,7 @@
 from typing import Any, Callable, Tuple, TypeVar
 
-from frame_utils import __identify_hook_and_store
-from store import _get_current_store
+from .frame_utils import __identify_hook_and_store
+from .store import _get_current_store
 
 T = TypeVar("T")
 
