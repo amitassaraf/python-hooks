@@ -1,2 +1,0 @@
-class BadHookDefinition(Exception):
-    pass

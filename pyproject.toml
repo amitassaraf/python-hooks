@@ -54,6 +54,8 @@ coverage = "^6.1.2"
 coverage-badge = "^1.1.0"
 pytest-html = "^3.1.1"
 pytest-cov = "^3.0.0"
+python-box = {version = "^7.0.1", extras = ["all"]}
+dill = "^0.3.7"
 
 [tool.black]
 # https://github.com/psf/black

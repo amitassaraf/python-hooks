@@ -1,9 +1,10 @@
 from types import SimpleNamespace
-from typing import Any, Type, TypeVar
+from typing import Any, TypeVar
 
-import pickle
 import threading
 from functools import lru_cache
+
+import dill as pickle
 
 thread_local = threading.local()
 T = TypeVar("T")

@@ -58,6 +58,7 @@ def __identify_hook_and_store(
     # The use of _getframe is not ideal, but it is more performant than using inspect.currentframe
     frame = sys._getframe().f_back.f_back
     identifier_prefix = ""
+
     # Skip all hook functions in order to identify the function that called the hook
     while (
         frame.f_code.co_name.startswith("use_")
