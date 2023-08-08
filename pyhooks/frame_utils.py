@@ -39,21 +39,12 @@ def __identify_function_and_owner(frame: FrameType) -> tuple[Callable | None, An
     return at.get(frame.f_code.co_name, None), value
 
 
-def __frame_parts_to_identifier(
-    filename: str, line_number: int, function_name: str, lines: list[str], index: int
-) -> str:
+def __frame_parts_to_identifier(*args) -> str:
     """
     Get a unique identifier for the frame. This is used to identify the hook that called the current function frame.
-    :param filename: The filename of the frame
-    :param line_number: The line number of the frame
-    :param function_name: The function name of the frame
-    :param lines: The lines of the frame
-    :param index: The index of the frame
     :return: A unique identifier for the frame
     """
-    return "".join(
-        [filename, str(line_number), function_name, str(index), *lines]
-    ).replace(" ", "")
+    return "".join(map(str, args))
 
 
 def __identify_hook_and_store(
@@ -76,8 +67,15 @@ def __identify_hook_and_store(
     ):
         # We add a prefix to the identifier to ensure that the identifier is unique and that we can use hooks inside
         # hooks
-        identifier_prefix += __frame_parts_to_identifier(*inspect.getframeinfo(frame))
+        identifier_prefix += __frame_parts_to_identifier(
+            frame.f_code.co_filename, frame.f_lineno, frame.f_code.co_name
+        )
         frame = frame.f_back
+
+    frame_identifier = identifier_prefix + __frame_parts_to_identifier(
+        frame.f_code.co_filename, frame.f_lineno, frame.f_code.co_name
+    )
+
     caller_function, owner = __identify_function_and_owner(frame)
     is_static_method = isinstance(caller_function, staticmethod)
     is_class_method = isinstance(caller_function, classmethod)
@@ -89,31 +87,15 @@ def __identify_hook_and_store(
                 owner = value
                 break
 
-    (
-        filename,
-        line_number,
-        function_name,
-        lines,
-        index,
-    ) = inspect.getframeinfo(frame)
-
     # If the hook is called from a method, we use a PythonObjectStore to store the hook's state.
     if (not is_method and not is_class_method) or always_global_store:
         _store = _get_current_store()
         return (
-            identifier_prefix
-            + __frame_parts_to_identifier(
-                filename,
-                line_number,
-                function_name,
-                lines,
-                index,
-            ),
+            frame_identifier,
             _store,
         )
 
-    state_name = lines[0].strip().split(",")[0].strip()
     return (
-        f"{identifier_prefix}{function_name}_{state_name}",
+        f"{frame_identifier}{frame.f_code.co_name}",
         python_object_store_factory(owner),
     )

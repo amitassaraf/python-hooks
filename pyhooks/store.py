@@ -3,6 +3,7 @@ from typing import Any, Type, TypeVar
 
 import pickle
 import threading
+from functools import lru_cache
 
 thread_local = threading.local()
 T = TypeVar("T")
@@ -51,6 +52,7 @@ class PickleStore(Store):
             del thread_local.__dict__[key]
 
 
+@lru_cache(maxsize=None)
 def python_object_store_factory(wrapped_cls: type[T]) -> type[Store]:
     class PythonObjectStore(Store):
         @staticmethod
