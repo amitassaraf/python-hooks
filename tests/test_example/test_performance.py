@@ -1,4 +1,7 @@
-from timeit import timeit
+from cProfile import Profile
+from pstats import SortKey, Stats
+from statistics import median
+from timeit import Timer, timeit
 
 from pyhooks.hooks import use_state
 
@@ -20,6 +23,17 @@ class Bar:
 
 
 def test_local_state():
-    python_state = timeit(Bar().python_state, number=100000)
-    hooks_state = timeit(Foo().local_state, number=100000)
-    assert hooks_state < python_state * 50, "Performance is not good enough"
+    python_state = Timer(Bar().python_state).repeat(repeat=100000, number=1)
+    hooks_state = Timer(Foo().local_state).repeat(repeat=100000, number=1)
+    python_state = median(python_state)
+    hooks_state = median(hooks_state)
+
+    overhead = hooks_state / python_state
+
+    allowed_overhead = 25
+
+    if overhead > allowed_overhead:
+        with Profile() as profile:
+            timeit(Foo().local_state, number=100000)
+            (Stats(profile).strip_dirs().sort_stats(SortKey.TIME).print_stats())
+    assert overhead < allowed_overhead, "Performance is not good enough"

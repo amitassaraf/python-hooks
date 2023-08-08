@@ -3,7 +3,6 @@ from __future__ import annotations
 from types import FrameType, FunctionType, MethodType
 from typing import Any, Callable
 
-import inspect
 import sys
 
 from .store import Store, _get_current_store, python_object_store_factory
@@ -30,8 +29,7 @@ def __identify_function_and_owner(frame: FrameType) -> tuple[Callable | None, An
         caller_name = frame.f_code.co_name
         # In the case we cannot find the owner using the qualname which is safest, we try to find the owner using the
         # function args. This is not safe because the function args can be anything, but it is better than nothing.
-        arg_info = inspect.getargvalues(frame)
-        for arg, arg_value in arg_info.locals.items():
+        for arg, arg_value in frame.f_locals.items():
             if hasattr(arg_value, caller_name) and isinstance(
                 getattr(arg_value, caller_name), (FunctionType, MethodType)
             ):
