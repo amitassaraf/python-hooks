@@ -5,6 +5,7 @@ from typing import Any, Callable
 
 import sys
 
+from .scope import HOOK_SCOPE_ATTRIBUTE, HOOKED_FUNCTION_ATTRIBUTE
 from .store import Store, _get_current_store, python_object_store_factory
 
 SPECIAL_HOOKS = ["create_context"]
@@ -39,7 +40,7 @@ def __identify_function_and_owner(frame: FrameType) -> tuple[Callable | None, An
         # help us limit the scope of hooks for global functions without owners.
         frame = frame.f_back
         for arg, arg_value in frame.f_locals.items():
-            if arg == "__hooked_function":
+            if arg == HOOKED_FUNCTION_ATTRIBUTE:
                 return arg_value, None
 
     return at.get(frame.f_code.co_name, None), value
@@ -94,8 +95,11 @@ def __identify_hook_and_store(
                 owner = value
                 break
 
-    if caller_function and getattr(caller_function, "__hook_scope__", None) is not None:
-        scope = getattr(caller_function, "__hook_scope__")
+    if (
+        caller_function
+        and getattr(caller_function, HOOK_SCOPE_ATTRIBUTE, None) is not None
+    ):
+        scope = getattr(caller_function, HOOK_SCOPE_ATTRIBUTE)
         if scope.in_context():
             frame_identifier += scope.identify(**frame.f_locals)
 

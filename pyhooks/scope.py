@@ -4,6 +4,9 @@ from contextlib import ContextDecorator
 from functools import wraps
 from uuid import uuid4
 
+HOOK_SCOPE_ATTRIBUTE = "__hook_scope__"
+HOOKED_FUNCTION_ATTRIBUTE = "__hooked_function__"
+
 
 class __HookScopeDecorator(ContextDecorator):
     """
@@ -53,11 +56,11 @@ def hook_scope(limit_to_keys: Optional[list[str]] = None) -> Callable:
     """
 
     # The function argument is called "__hooked_function" on purpose to be able to identify it in the frame utils
-    def scope_decorator(__hooked_function):
-        @__HookScopeDecorator(__hooked_function, limit_to_keys=limit_to_keys)
-        @wraps(__hooked_function)
+    def scope_decorator(__hooked_function__):
+        @__HookScopeDecorator(__hooked_function__, limit_to_keys=limit_to_keys)
+        @wraps(__hooked_function__)
         def wrapper(*args, **kwargs):
-            return __hooked_function(*args, **kwargs)
+            return __hooked_function__(*args, **kwargs)
 
         return wrapper
 

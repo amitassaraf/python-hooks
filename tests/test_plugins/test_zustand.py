@@ -4,7 +4,7 @@ use_bear_store = create(
     lambda set, get: (
         {
             "bear": "🐻",
-            "set_bear": lambda: set(lambda state: {**state, "bear": "🐻🐻"}),
+            "increase_bears": lambda: set(lambda state: {**state, "bear": "🐻🐻"}),
         }
     )
 )
@@ -13,6 +13,7 @@ use_bear_store = create(
 def test_basic_get_and_set():
     assert use_bear_store(lambda state: state.bear) == "🐻"
 
-    use_bear_store(lambda state: state.set_bear)()
+    increase_bears = use_bear_store(lambda state: state.increase_bears)
+    increase_bears()
 
     assert use_bear_store(lambda state: state.bear) == "🐻🐻"
