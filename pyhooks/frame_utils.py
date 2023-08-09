@@ -34,6 +34,14 @@ def __identify_function_and_owner(frame: FrameType) -> tuple[Callable | None, An
                 getattr(arg_value, caller_name), (FunctionType, MethodType)
             ):
                 return getattr(arg_value, caller_name), arg_value
+
+        # Finally, we will try to find a hooked function in the frame stack which is provided by the hook decorator to
+        # help us limit the scope of hooks for global functions without owners.
+        frame = frame.f_back
+        for arg, arg_value in frame.f_locals.items():
+            if arg == "__hooked_function":
+                return arg_value, None
+
     return at.get(frame.f_code.co_name, None), value
 
 
@@ -85,6 +93,11 @@ def __identify_hook_and_store(
             if isinstance(value, owner):
                 owner = value
                 break
+
+    if caller_function and getattr(caller_function, "__hook_scope__", None) is not None:
+        scope = getattr(caller_function, "__hook_scope__")
+        if scope.in_context():
+            frame_identifier += scope.identify(**frame.f_locals)
 
     # If the hook is called from a method, we use a PythonObjectStore to store the hook's state.
     if (not is_method and not is_class_method) or always_global_store:
