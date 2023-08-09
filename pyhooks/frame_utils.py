@@ -5,7 +5,7 @@ from typing import Any, Callable
 
 import sys
 
-from .scope import HOOK_SCOPE_ATTRIBUTE, HOOKED_FUNCTION_ATTRIBUTE
+from .scope import HOOKED_FUNCTION_ATTRIBUTE, _hook_scope_manager
 from .store import Store, _get_current_store, python_object_store_factory
 
 SPECIAL_HOOKS = ["create_context"]
@@ -84,24 +84,23 @@ def __identify_hook_and_store(
         frame.f_code.co_filename, frame.f_lineno, frame.f_code.co_name
     )
 
+    # We identify the function that called the hook and its owner
     caller_function, owner = __identify_function_and_owner(frame)
+
+    # We identify the type of the function that called the hook
     is_static_method = isinstance(caller_function, staticmethod)
     is_class_method = isinstance(caller_function, classmethod)
     is_method = owner is not None and not is_static_method and not is_class_method
 
+    # In case the owner we found is a class, we try to find the instance of the class in the frame locals (self)
     if (is_method or is_class_method) and getattr(owner, "__class__", None) == type:
         for _, value in frame.f_locals.items():
             if isinstance(value, owner):
                 owner = value
                 break
 
-    if (
-        caller_function
-        and getattr(caller_function, HOOK_SCOPE_ATTRIBUTE, None) is not None
-    ):
-        scope = getattr(caller_function, HOOK_SCOPE_ATTRIBUTE)
-        if scope.in_context():
-            frame_identifier += scope.identify(**frame.f_locals)
+    # Always add the current hook scope identifier to the frame identifier
+    frame_identifier += ";".join(_hook_scope_manager.current_identifier)
 
     # If the hook is called from a method, we use a PythonObjectStore to store the hook's state.
     if (not is_method and not is_class_method) or always_global_store:

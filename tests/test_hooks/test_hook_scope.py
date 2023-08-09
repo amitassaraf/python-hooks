@@ -65,3 +65,25 @@ def test_class_state():
     assert bar.class_state("A") == 2
     assert bar.class_state("B") == 0
     assert bar.class_state("B") == 1
+
+
+def test_nested_hook_scope():
+    class Foo:
+        def nested_state(self):
+            counter, set_counter = use_state(0)
+            set_counter(counter + 1)
+            return counter
+
+        @hook_scope(limit_to_keys=["counter_name"])
+        def local_state(self, counter_name: str):
+            return self.nested_state()
+
+    foo = Foo()
+
+    assert foo.local_state("A") == 0
+    assert foo.local_state("A") == 1
+    assert foo.local_state("B") == 0
+    assert foo.local_state("B") == 1
+    assert foo.local_state("A") == 2
+    assert Foo().local_state("A") == 0
+    assert Foo().local_state("A") == 0
