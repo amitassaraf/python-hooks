@@ -1,12 +1,14 @@
 from hooks.plugins.zustand import create
 
 use_bear_store = create(
+    {
+        "bear": "🐻",
+    },
     lambda set, get: (
         {
-            "bear": "🐻",
             "increase_bears": lambda: set(lambda state: {**state, "bear": "🐻🐻"}),
         }
-    )
+    ),
 )
 
 

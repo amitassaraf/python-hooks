@@ -43,11 +43,14 @@ def __identify_function_and_owner(
         # Finally, we will try to find a hooked function in the frame stack which is provided by the hook decorator to
         # help us limit the scope of hooks for global functions without owners.
         frame = frame.f_back
-        for arg, arg_value in frame.f_locals.items():
-            if arg == HOOKED_FUNCTION_ATTRIBUTE:
-                return arg_value, None
+        if frame:
+            for arg, arg_value in frame.f_locals.items():
+                if arg == HOOKED_FUNCTION_ATTRIBUTE:
+                    return arg_value, None
 
-    return at.get(frame.f_code.co_name, None), value
+    if frame:
+        return at.get(frame.f_code.co_name, None), value
+    return None, value
 
 
 def __frame_parts_to_identifier(*args: Any) -> str:
@@ -61,12 +64,14 @@ def __frame_parts_to_identifier(*args: Any) -> str:
 # type: ignore
 def __identify_hook_and_backend(
     always_global_backend: bool = False,
+    prefix: str = "",
 ) -> tuple[str, type[HooksBackend] | HooksBackend]:
     """
     Identify the hook that called the current function frame and the backend that should be used to backend the hook's
     state. If the hook is called from a method, the backend is a PythonObjectBackend. If the hook is called from a static
     method, the backend is a PickleBackend. If the hook is called from a function, the backend is a PickleBackend.
     :param always_global_backend: If True, the backend will always be a PickleBackend regardless of the hook's caller
+    :param prefix: A prefix to add to the hook identifier
     :return: The hook identifier and the backend that should be used to backend the hook's state
     """
     # The use of _getframe is not ideal, but it is more performant than using inspect.currentframe
@@ -88,13 +93,14 @@ def __identify_hook_and_backend(
     # Skip all hook functions in order to identify the function that called the hook
     while (
         frame.f_code.co_name.startswith("use_")
-        and frame.f_code.co_name not in SPECIAL_HOOKS
-    ):
+        or frame.f_globals["__name__"].startswith("hooks.")
+    ) and frame.f_code.co_name not in SPECIAL_HOOKS:
         # We add a prefix to the identifier to ensure that the identifier is unique and that we can use hooks inside
         # hooks
-        identifier_prefix += __frame_parts_to_identifier(
-            frame.f_code.co_filename, frame.f_lineno, frame.f_code.co_name
-        )
+        if not frame.f_globals["__name__"].startswith("hooks."):
+            identifier_prefix += __frame_parts_to_identifier(
+                frame.f_code.co_filename, frame.f_lineno, frame.f_code.co_name
+            )
         frame = frame.f_back
 
     frame_identifier = identifier_prefix + __frame_parts_to_identifier(
@@ -127,11 +133,11 @@ def __identify_hook_and_backend(
     if (not is_method and not is_class_method) or always_global_backend:
         _backend = get_hooks_backend()
         return (
-            frame_identifier,
+            f"{prefix}{frame_identifier}",
             _backend,
         )
 
     return (
-        f"{frame_identifier}{frame.f_code.co_name}",
+        f"{prefix}{frame_identifier}{frame.f_code.co_name}",
         python_object_backend_factory(owner),
     )

@@ -62,8 +62,11 @@ def create_context(default_value: Any) -> str:
     :param default_value: The default value of the context
     :return: The identifier of the context
     """
-    identifier, _backend = __identify_hook_and_backend(always_global_backend=True)
-    _backend.save(identifier, default_value)
+    identifier, _backend = __identify_hook_and_backend(
+        always_global_backend=True, prefix="__hooks_context__"
+    )
+    if not _backend.exists(identifier):
+        _backend.save(identifier, default_value)
     return identifier
 
 
