@@ -4,7 +4,7 @@ from typing import Any, Callable
 
 from box import Box
 
-from pyhooks import create_context, set_context_value, use_context
+from hooks import create_context, set_context_value, use_context
 
 StateSelector = Callable[[Any], Any]
 SetTyping = Callable[[StateSelector], None]

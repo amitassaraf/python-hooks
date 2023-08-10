@@ -1,10 +1,10 @@
 # Poetry pyproject.toml: https://python-poetry.org/docs/pyproject/
 [build-system]
-requires = ["poetry_core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
 
 [tool.poetry]
-name = "pyhooks"
+name = "python-hooks"
 version = "0.1.0"
 description = "A React inspired way to code in Python"
 readme = "README.md"
@@ -12,6 +12,7 @@ authors = ["Amit Assaraf <amit.assaraf@gmail.com>"]
 license = "MIT"
 repository = "https://github.com/amitassaraf/pyhooks"
 homepage = "https://github.com/amitassaraf/pyhooks"
+packages = [{include = "hooks", from = "src"}]
 
 # Keywords description https://python-poetry.org/docs/pyproject/#keywords
 keywords = []  #! Update me
@@ -113,9 +114,6 @@ warn_return_any = false
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
-warn_union_attrs = false
-
-
 
 [tool.pytest.ini_options]
 # https://docs.pytest.org/en/6.2.x/customize.html#pyproject-toml
@@ -143,3 +141,6 @@ branch = true
 [coverage.report]
 fail_under = 50
 show_missing = true
+
+[tool.setuptools.package-dir]
+hooks = "src/hooks"

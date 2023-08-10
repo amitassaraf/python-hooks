@@ -1,5 +1,5 @@
-from pyhooks.scope import hook_scope
-from pyhooks.use import use_state
+from hooks.scope import hook_scope
+from hooks.use import use_state
 
 
 def test_local_state() -> None:

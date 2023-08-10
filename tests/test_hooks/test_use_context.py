@@ -1,4 +1,4 @@
-from pyhooks.use import create_context, set_context_value, use_context
+from hooks.use import create_context, set_context_value, use_context
 
 
 def test_context_hook() -> None:

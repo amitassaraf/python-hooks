@@ -1,6 +1,6 @@
 from typing import Any, Union
 
-from pyhooks.backend import HooksBackend
+from hooks.backend import HooksBackend
 
 try:
     # Extend pickle to support lambdas
