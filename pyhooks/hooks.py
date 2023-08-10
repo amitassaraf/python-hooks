@@ -1,7 +1,7 @@
 from typing import Any, Callable, Tuple, TypeVar
 
-from .frame_utils import __identify_hook_and_store
-from .store import _get_current_store
+from .backend import get_hooks_backend
+from .frame_utils import __identify_hook_and_backend
 
 T = TypeVar("T")
 
@@ -12,14 +12,14 @@ def use_state(default_value: T) -> tuple[T, Callable]:
     :param default_value: The default value of the state
     :return: The current value of the state and a function to update the state
     """
-    identifier, _store = __identify_hook_and_store()
+    identifier, _backend = __identify_hook_and_backend()
 
     def state_wrapper(value: T):
         state_wrapper.val = value
-        _store.save(identifier, value)
+        _backend.save(identifier, value)
 
-    if _store.exists(identifier):
-        loaded_value = _store.load(identifier)
+    if _backend.exists(identifier):
+        loaded_value = _backend.load(identifier)
         state_wrapper.val = loaded_value
         return state_wrapper.val, state_wrapper
 
@@ -60,28 +60,28 @@ def create_context(default_value: Any) -> str:
     :param default_value: The default value of the context
     :return: The identifier of the context
     """
-    identifier, _store = __identify_hook_and_store(always_global_store=True)
-    _store.save(identifier, default_value)
+    identifier, _backend = __identify_hook_and_backend(always_global_backend=True)
+    _backend.save(identifier, default_value)
     return identifier
 
 
 def set_context_value(context: Any, value: Any) -> str:
     """
-    Set the value of a context hook. The value will be saved in the store.
+    Set the value of a context hook. The value will be saved in the backend.
     :param context: The identifier of the context
     :param value: The value to set
     :return: The value that was set
     """
-    _store = _get_current_store()
-    _store.save(context, value)
+    _backend = get_hooks_backend()
+    _backend.save(context, value)
     return value
 
 
 def use_context(context: Any) -> Any:
     """
-    Create a context hook. The value of the context will be loaded from the store.
+    Create a context hook. The value of the context will be loaded from the backend.
     :param context: The identifier of the context
     :return: The value of the context
     """
-    _store = _get_current_store()
-    return _store.load(context)
+    _backend = get_hooks_backend()
+    return _backend.load(context)

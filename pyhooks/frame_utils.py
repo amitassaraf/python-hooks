@@ -5,8 +5,8 @@ from typing import Any, Callable
 
 import sys
 
+from .backend import HooksBackend, get_hooks_backend, python_object_backend_factory
 from .scope import HOOKED_FUNCTION_ATTRIBUTE, _hook_scope_manager
-from .store import Store, _get_current_store, python_object_store_factory
 
 SPECIAL_HOOKS = ["create_context"]
 
@@ -54,15 +54,15 @@ def __frame_parts_to_identifier(*args) -> str:
     return "".join(map(str, args))
 
 
-def __identify_hook_and_store(
-    always_global_store: bool = False,
-) -> tuple[str, type[Store] | Store]:
+def __identify_hook_and_backend(
+    always_global_backend: bool = False,
+) -> tuple[str, type[HooksBackend] | HooksBackend]:
     """
-    Identify the hook that called the current function frame and the store that should be used to store the hook's
-    state. If the hook is called from a method, the store is a PythonObjectStore. If the hook is called from a static
-    method, the store is a PickleStore. If the hook is called from a function, the store is a PickleStore.
-    :param always_global_store: If True, the store will always be a PickleStore regardless of the hook's caller
-    :return: The hook identifier and the store that should be used to store the hook's state
+    Identify the hook that called the current function frame and the backend that should be used to backend the hook's
+    state. If the hook is called from a method, the backend is a PythonObjectBackend. If the hook is called from a static
+    method, the backend is a PickleBackend. If the hook is called from a function, the backend is a PickleBackend.
+    :param always_global_backend: If True, the backend will always be a PickleBackend regardless of the hook's caller
+    :return: The hook identifier and the backend that should be used to backend the hook's state
     """
     # The use of _getframe is not ideal, but it is more performant than using inspect.currentframe
     frame = sys._getframe().f_back.f_back
@@ -102,15 +102,15 @@ def __identify_hook_and_store(
     # Always add the current hook scope identifier to the frame identifier
     frame_identifier += ";".join(_hook_scope_manager.current_identifier)
 
-    # If the hook is called from a method, we use a PythonObjectStore to store the hook's state.
-    if (not is_method and not is_class_method) or always_global_store:
-        _store = _get_current_store()
+    # If the hook is called from a method, we use a PythonObjectBackend to backend the hook's state.
+    if (not is_method and not is_class_method) or always_global_backend:
+        _backend = get_hooks_backend()
         return (
             frame_identifier,
-            _store,
+            _backend,
         )
 
     return (
         f"{frame_identifier}{frame.f_code.co_name}",
-        python_object_store_factory(owner),
+        python_object_backend_factory(owner),
     )
