@@ -91,6 +91,10 @@ def __identify_hook_and_backend(
     is_static_method = isinstance(caller_function, staticmethod)
     is_class_method = isinstance(caller_function, classmethod)
     is_method = owner is not None and not is_static_method and not is_class_method
+    is_scoped_globally = hasattr(caller_function, "use_global_scope") and getattr(
+        caller_function, "use_global_scope", False
+    )
+    always_global_backend = always_global_backend or is_scoped_globally
 
     # In case the owner we found is a class, we try to find the instance of the class in the frame locals (self)
     if (is_method or is_class_method) and getattr(owner, "__class__", None) == type:

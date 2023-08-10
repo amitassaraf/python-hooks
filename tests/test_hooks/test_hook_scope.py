@@ -110,3 +110,19 @@ def test_nested_hook_scopes():
     assert foo.local_state("A") == 2
     assert Foo().local_state("A") == 0
     assert Foo().local_state("A") == 0
+
+
+def test_local_state_that_is_scoped_globally():
+    class Foo:
+        @hook_scope(use_global_scope=True, limit_to_keys=[])
+        def local_state(self):
+            counter, set_counter = use_state(0)
+            set_counter(counter + 1)
+            return counter
+
+    foo = Foo()
+
+    assert foo.local_state() == 0
+    assert foo.local_state() == 1
+    assert Foo().local_state() == 2
+    assert Foo().local_state() == 3
