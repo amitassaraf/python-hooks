@@ -34,7 +34,7 @@ python-box = {version = "^7.0.1", extras = ["all"]}
 dill = "^0.3.7"
 
 typer = {extras = ["all"], version = "^0.4.0"}
-rich = "^10.14.0"
+rich = ">=10.14,<14.0"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.1"
