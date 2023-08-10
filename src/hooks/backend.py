@@ -45,9 +45,9 @@ class PickleHooksBackend(HooksBackend):
     @classmethod
     def reset_backend(cls) -> None:
         keys = []
-        for key, value in globals().items():  # type: ignore
-            if key.startswith(BACKEND_KEY):  # type: ignore
-                keys.append(key)  # type: ignore
+        for key, value in globals().items():
+            if key.startswith(BACKEND_KEY):
+                keys.append(key)
         for key in keys:
             del globals()[key]
 
