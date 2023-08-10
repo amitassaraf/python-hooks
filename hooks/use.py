@@ -1,4 +1,4 @@
-from typing import Any, Callable, Tuple, TypeVar
+from typing import Any, Callable, TypeVar
 
 from .backend import get_hooks_backend
 from .frame_utils import __identify_hook_and_backend
@@ -6,7 +6,7 @@ from .frame_utils import __identify_hook_and_backend
 T = TypeVar("T")
 
 
-def use_state(default_value: T) -> tuple[T, Callable]:
+def use_state(default_value: T) -> tuple[T, Callable[[Any], Any]]:
     """
     Create a stateful hook.
     :param default_value: The default value of the state
@@ -14,7 +14,7 @@ def use_state(default_value: T) -> tuple[T, Callable]:
     """
     identifier, _backend = __identify_hook_and_backend()
 
-    def state_wrapper(value: T):
+    def state_wrapper(value: T) -> None:
         state_wrapper.val = value
         _backend.save(identifier, value)
 
@@ -27,7 +27,7 @@ def use_state(default_value: T) -> tuple[T, Callable]:
     return state_wrapper.val, state_wrapper
 
 
-def use_effect(callback: Callable, dependencies: list):
+def use_effect(callback: Callable[[], Any], dependencies: list[Any]) -> None:
     """
     Create an effect hook. The callback will be called when the dependencies change.
     :param callback: The callback to call when the dependencies change
@@ -43,7 +43,7 @@ def use_effect(callback: Callable, dependencies: list):
     return
 
 
-def use_memo(callback: Callable, dependencies: list):
+def use_memo(callback: Callable[[], Any], dependencies: list[Any]) -> Any:
     """
     Create a memoized hook. The callback will be called when the dependencies change. Practically it is an alias for
     use_effect.

@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Any, Callable, Optional
 
 from functools import wraps
 
@@ -9,8 +9,11 @@ from contextlib import contextmanager
 
 @contextmanager
 def _hook_scope_manager(
-    wrapped: Callable, limit_to_keys: Optional[list[str]] = None, *args, **kwargs
-):
+    wrapped: Callable[[Any], Any],
+    limit_to_keys: Optional[list[str]] = None,
+    *args: Any,
+    **kwargs: dict[str, Any],
+) -> None:
     """
     A context manager to manage the scope of hooks. This is used to identify the scope of hooks and to limit the scope
     of hooks to the function and keys.
@@ -42,8 +45,8 @@ _hook_scope_manager.current_identifier = []
 
 
 def hook_scope(
-    limit_to_keys: Optional[list[str]] = None, use_global_scope: bool = False
-) -> Callable:
+    limit_to_keys: Optional[list[str]] = None, use_global_scope: Optional[bool] = False
+) -> Callable[[Any], Any]:
     """
     Create a scope for all hooks in the scope. The scope will be added to the hook identifiers to allow for state to
     be scoped either per the function and below or by the function and keys.
@@ -60,11 +63,11 @@ def hook_scope(
         )
 
     # The function argument is called "__hooked_function" on purpose to be able to identify it in the frame utils
-    def scope_decorator(__hooked_function__):
+    def scope_decorator(__hooked_function__) -> Callable[[Any], Any]:
         __hooked_function__.use_global_scope = use_global_scope
 
         @wraps(__hooked_function__)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs) -> Any:
             with _hook_scope_manager(
                 __hooked_function__, limit_to_keys, *args, **kwargs
             ):

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from types import FrameType, FunctionType, MethodType
-from typing import Any, Callable
+from typing import Any, Callable, Optional, Union
 
 import sys
 
@@ -11,7 +11,9 @@ from .scope import HOOKED_FUNCTION_ATTRIBUTE, _hook_scope_manager
 SPECIAL_HOOKS = ["create_context"]
 
 
-def __identify_function_and_owner(frame: FrameType) -> tuple[Callable | None, Any]:
+def __identify_function_and_owner(
+    frame: FrameType | None | Any,
+) -> tuple[Callable[[Any], Any] | None, Any]:
     """
     Find the owner of the function that called the current function frame. If the function is a method, the owner is
     the class of the instance. If the function is a static method, the owner is the class of the static method.
@@ -46,7 +48,7 @@ def __identify_function_and_owner(frame: FrameType) -> tuple[Callable | None, An
     return at.get(frame.f_code.co_name, None), value
 
 
-def __frame_parts_to_identifier(*args) -> str:
+def __frame_parts_to_identifier(*args: Any) -> str:
     """
     Get a unique identifier for the frame. This is used to identify the hook that called the current function frame.
     :return: A unique identifier for the frame
@@ -54,6 +56,7 @@ def __frame_parts_to_identifier(*args) -> str:
     return "".join(map(str, args))
 
 
+# type: ignore
 def __identify_hook_and_backend(
     always_global_backend: bool = False,
 ) -> tuple[str, type[HooksBackend] | HooksBackend]:
@@ -65,7 +68,19 @@ def __identify_hook_and_backend(
     :return: The hook identifier and the backend that should be used to backend the hook's state
     """
     # The use of _getframe is not ideal, but it is more performant than using inspect.currentframe
-    frame = sys._getframe().f_back.f_back
+    frame: FrameType | None | Any = sys._getframe()
+    if not frame:
+        raise RuntimeError(
+            "Could not identify the hook that called the current function"
+        )
+
+    frame: FrameType | None | Any = frame.f_back.f_back
+
+    if not frame:
+        raise RuntimeError(
+            "Could not identify the hook that called the current function"
+        )
+
     identifier_prefix = ""
 
     # Skip all hook functions in order to identify the function that called the hook

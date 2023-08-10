@@ -2,15 +2,15 @@ from typing import Any, Callable
 
 from box import Box
 
-from pyhooks import create_context, set_context_value, use_context
+from hooks import create_context, set_context_value, use_context
 
-StateSelector = Callable[[dict], dict]
+StateSelector = Callable[[Any], Any]
 SetTyping = Callable[[StateSelector], None]
-GetTyping = Callable[[None], dict]
+GetTyping = Callable[[], Box]
 
 
 class ZustandStore:
-    def __init__(self, store_config: Callable[[SetTyping, GetTyping], dict]):
+    def __init__(self, store_config: Callable[[SetTyping, GetTyping], Any]):
         self.context = create_context({})
         self.setter = lambda state_selector: set_context_value(
             self.context, state_selector(use_context(self.context))
@@ -22,6 +22,6 @@ class ZustandStore:
         return selector(self.getter())
 
 
-def create(store_config: Callable[[SetTyping, GetTyping], dict]) -> ZustandStore:
+def create(store_config: Callable[[SetTyping, GetTyping], Any]) -> ZustandStore:
     """ """
     return ZustandStore(store_config)

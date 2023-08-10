@@ -3,11 +3,11 @@ from pstats import SortKey, Stats
 from statistics import median
 from timeit import Timer, timeit
 
-from pyhooks.hooks import use_state
+from hooks.use import use_state
 
 
 class Foo:
-    def local_state(self):
+    def local_state(self) -> int:
         counter, set_counter = use_state(0)
         set_counter(counter + 1)
         return counter
@@ -17,20 +17,20 @@ class Bar:
     def __init__(self):
         self.counter = 0
 
-    def python_state(self):
+    def python_state(self) -> int:
         self.counter += 1
         return self.counter
 
 
-def test_local_state():
+def test_local_state() -> None:
     python_state = Timer(Bar().python_state).repeat(repeat=100000, number=1)
     hooks_state = Timer(Foo().local_state).repeat(repeat=100000, number=1)
-    python_state = median(python_state)
-    hooks_state = median(hooks_state)
+    python_state_median = median(python_state)
+    hooks_state_median = median(hooks_state)
 
-    overhead = hooks_state / python_state
+    overhead = hooks_state_median / python_state_median
 
-    allowed_overhead = 25
+    allowed_overhead: int = 25
 
     if overhead > allowed_overhead:
         with Profile() as profile:

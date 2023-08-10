@@ -1,5 +1,5 @@
 from types import SimpleNamespace
-from typing import Any, TypeVar
+from typing import Any, TypeVar, Union
 
 import threading
 from functools import lru_cache
@@ -18,7 +18,7 @@ class HooksBackend(SimpleNamespace):
         raise NotImplemented
 
     @classmethod
-    def save(cls, identifier: str, value: Any) -> bool:
+    def save(cls, identifier: str, value: Any) -> Union[bool, None, Any]:
         raise NotImplemented
 
     @classmethod
@@ -26,7 +26,7 @@ class HooksBackend(SimpleNamespace):
         raise NotImplemented
 
     @classmethod
-    def reset_backend(cls):
+    def reset_backend(cls) -> None:
         raise NotImplemented
 
 
@@ -45,7 +45,7 @@ class PickleHooksBackend(HooksBackend):
         return hasattr(thread_local, BACKEND_KEY + identifier)
 
     @classmethod
-    def reset_backend(cls):
+    def reset_backend(cls) -> None:
         keys = []
         for key, value in thread_local.__dict__:
             if key.startswith(BACKEND_KEY):
@@ -73,9 +73,9 @@ def python_object_backend_factory(wrapped_cls: type[T]) -> type[HooksBackend]:
     return PythonObjectHooksBackend
 
 
-def set_hooks_backend(backend: type[HooksBackend]):
+def set_hooks_backend(backend: type[HooksBackend]) -> None:
     setattr(thread_local, BACKEND_KEY, backend)
 
 
-def get_hooks_backend() -> type[HooksBackend]:
+def get_hooks_backend() -> Any:
     return getattr(thread_local, BACKEND_KEY, PickleHooksBackend)

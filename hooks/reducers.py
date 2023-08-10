@@ -1,14 +1,21 @@
-from typing import Any, Callable
+from typing import Any, Callable, Tuple, Union
 
-from .hooks import use_state
+from .use import use_state
 
 
 def __dispatch_factory(
-    reducer: Callable[[dict, dict], dict],
-    state: dict,
-    set_state: Callable[[dict], Any],
-    middleware: list[Callable[[dict, Callable, dict], dict]] = None,
-) -> Callable[[dict], dict]:
+    reducer: Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]],
+    state: dict[str, Any],
+    set_state: Callable[[dict[str, Any]], Any],
+    middleware: Union[
+        list[
+            Callable[
+                [dict[str, Any], Callable[[Any], Any], dict[str, Any]], dict[str, Any]
+            ]
+        ],
+        None,
+    ] = None,
+) -> Callable[[dict[str, Any]], dict[str, Any]]:
     """
     Create a dispatch function for a reducer.
     :param reducer: The reducer to use
@@ -17,8 +24,10 @@ def __dispatch_factory(
     :param middleware: The middleware to use
     :return: The dispatch function
     """
+    if middleware is None:
+        middleware = []
 
-    def dispatch(action: dict) -> dict:
+    def dispatch(action: dict[str, Any]) -> dict[str, Any]:
         """
         Dispatch an action to the reducer. The action will be passed to the middleware. The middleware will be called
         in order. The last middleware will call the reducer. The reducer will return the new state. The new state will
@@ -26,8 +35,13 @@ def __dispatch_factory(
         :param action: The action to dispatch
         :return: The new state
         """
-        new_state: dict = state
-        middleware.append(
+        inner_middleware = middleware
+
+        new_state: dict[str, Any] = state
+
+        if inner_middleware is None:
+            inner_middleware = []
+        inner_middleware.append(
             lambda inner_state, _, inner_action: reducer(inner_state, inner_action)
         )
 
@@ -41,7 +55,7 @@ def __dispatch_factory(
                 action,
             )
 
-        state_change: dict = runner(new_state, middleware, action)
+        state_change: dict[str, Any] = runner(new_state, inner_middleware, action)
         new_state = {**new_state, **state_change}
         set_state(new_state)
         return new_state
@@ -50,10 +64,17 @@ def __dispatch_factory(
 
 
 def use_reducer(
-    reducer: Callable[[dict, dict], dict],
-    initial_state: dict,
-    middleware: list[Callable[[dict, Callable, dict], dict]] = None,
-) -> (dict, Callable[[dict], dict]):
+    reducer: Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]],
+    initial_state: dict[str, Any],
+    middleware: Union[
+        list[
+            Callable[
+                [dict[str, Any], Callable[[Any], Any], dict[str, Any]], dict[str, Any]
+            ]
+        ],
+        None,
+    ] = None,
+) -> tuple[dict[str, Any], Callable[[dict[str, Any]], dict[str, Any]]]:
     """
     Create a reducer hook. The reducer will be called when the dispatch function is called.
     :param reducer: The reducer to use

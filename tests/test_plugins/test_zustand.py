@@ -1,4 +1,4 @@
-from pyhooks.plugins.zustand import create
+from hooks.plugins.zustand import create
 
 use_bear_store = create(
     lambda set, get: (
@@ -10,7 +10,7 @@ use_bear_store = create(
 )
 
 
-def test_basic_get_and_set():
+def test_basic_get_and_set() -> None:
     assert use_bear_store(lambda state: state.bear) == "🐻"
 
     increase_bears = use_bear_store(lambda state: state.increase_bears)

@@ -4,7 +4,7 @@ import pkgutil
 discovered_plugins = {
     name: importlib.import_module(name)
     for finder, name, ispkg in pkgutil.iter_modules()
-    if name.startswith("pyhooks_")
+    if name.startswith("hooks_")
 }
 
 for module in discovered_plugins.values():
