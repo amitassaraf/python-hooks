@@ -4,14 +4,14 @@ requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "hooks"
+name = "pyhooks"
 version = "0.1.0"
 description = "A React inspired way to code in Python"
 readme = "README.md"
 authors = ["Amit Assaraf <amit.assaraf@gmail.com>"]
 license = "MIT"
-repository = "https://github.com/amitassaraf/hooks"
-homepage = "https://github.com/amitassaraf/hooks"
+repository = "https://github.com/amitassaraf/pyhooks"
+homepage = "https://github.com/amitassaraf/pyhooks"
 
 # Keywords description https://python-poetry.org/docs/pyproject/#keywords
 keywords = []  #! Update me

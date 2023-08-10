@@ -3,7 +3,7 @@ from pstats import SortKey, Stats
 from statistics import median
 from timeit import Timer, timeit
 
-from hooks.use import use_state
+from pyhooks.use import use_state
 
 
 class Foo:

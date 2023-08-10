@@ -1,4 +1,4 @@
-from hooks.plugins.zustand import create
+from pyhooks.plugins.zustand import create
 
 use_bear_store = create(
     lambda set, get: (
