@@ -35,7 +35,7 @@ def _hook_scope_manager(
     for key, value in [*kwargs.items(), *list(zip(args_names, args))]:
         if limit_to_keys is None or key in limit_to_keys:
             identifier += f"{key}:{value};"
-    _hook_scope_manager.current_identifier.append(f"{id(wrapped)}{identifier}")
+    _hook_scope_manager.current_identifier.append(f"{wrapped.__qualname__}{identifier}")
     try:
         yield
     finally:

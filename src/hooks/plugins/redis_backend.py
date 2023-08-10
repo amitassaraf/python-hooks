@@ -12,9 +12,7 @@ try:
 
         @classmethod
         def initialize(cls, host: str, port: int, **kwargs: Any) -> None:
-            cls.redis_client = redis.Redis(
-                host=host, port=port, decode_responses=True, **kwargs
-            )
+            cls.redis_client = redis.Redis(host=host, port=port, **kwargs)
 
         @classmethod
         def load(cls, identifier: str) -> Any:

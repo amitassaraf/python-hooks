@@ -21,7 +21,7 @@ poetry-remove:
 install:
 	poetry lock -n && poetry export --without-hashes > requirements.txt
 	poetry install -n
-	-poetry run mypy --install-types --non-interactive ./
+	-poetry run mypy --install-types --non-interactive ./src
 
 .PHONY: pre-commit-install
 pre-commit-install:
@@ -51,7 +51,7 @@ check-codestyle:
 
 .PHONY: mypy
 mypy:
-	poetry run mypy --config-file pyproject.toml ./
+	poetry run mypy --config-file pyproject.toml ./src
 
 .PHONY: check-safety
 check-safety:
