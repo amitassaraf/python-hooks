@@ -5,13 +5,13 @@ build-backend = "setuptools.build_meta"
 
 [tool.poetry]
 name = "python-hooks"
-version = "0.1.1"
+version = "0.1.2"
 description = "A React inspired way to code in Python"
 readme = "README.md"
 authors = ["Amit Assaraf <amit.assaraf@gmail.com>"]
 license = "MIT"
-repository = "https://github.com/amitassaraf/pyhooks"
-homepage = "https://github.com/amitassaraf/pyhooks"
+repository = "https://github.com/amitassaraf/python-hooks"
+homepage = "https://github.com/amitassaraf/python-hooks"
 packages = [{include = "hooks", from = "src"}]
 
 # Keywords description https://python-poetry.org/docs/pyproject/#keywords
