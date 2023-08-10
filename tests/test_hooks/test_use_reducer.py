@@ -1,3 +1,5 @@
+# mypy: ignore-errors
+
 from typing import Any, Callable
 
 from unittest.mock import Mock

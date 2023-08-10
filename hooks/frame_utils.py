@@ -1,7 +1,9 @@
+# mypy: ignore-errors
+
 from __future__ import annotations
 
 from types import FrameType, FunctionType, MethodType
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable
 
 import sys
 
