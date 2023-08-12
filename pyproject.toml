@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.poetry]
 name = "python-hooks"
-version = "0.1.5"
+version = "0.1.6"
 description = "A React inspired way to code in Python"
 readme = "README.md"
 authors = ["Amit Assaraf <amit.assaraf@gmail.com>"]
