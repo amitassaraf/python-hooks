@@ -5,7 +5,7 @@ from .backends.backend_state import get_hooks_backend
 
 def __dispatch_factory(
     reducer: Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]],
-    state: Optional[dict[str, Any]],
+    state_fetcher: Callable[[], dict[str, Any]],
     set_state: Callable[[dict[str, Any]], Any],
     middleware: Union[
         list[
@@ -19,7 +19,7 @@ def __dispatch_factory(
     """
     Create a dispatch function for a reducer.
     :param reducer: The reducer to use
-    :param state: The state to use
+    :param state_fetcher: The state_fetcher to use
     :param set_state: The set_state function to use
     :param middleware: The middleware to use
     :return: The dispatch function
@@ -37,7 +37,7 @@ def __dispatch_factory(
         """
         inner_middleware = middleware
 
-        new_state: dict[str, Any] = state
+        new_state: dict[str, Any] = state_fetcher()
 
         if inner_middleware is None:
             inner_middleware = []
@@ -89,6 +89,9 @@ def use_reducer(
         state_wrapper.val = value
         _backend.save(identifier, value)
 
+    def state_fetcher() -> dict[str, Any]:
+        return state_wrapper.val
+
     if _backend.exists(identifier):
         loaded_value = _backend.load(identifier)
         state_wrapper.val = loaded_value
@@ -98,5 +101,31 @@ def use_reducer(
 
     state_wrapper(initial_state)
     return state_wrapper.val, __dispatch_factory(
-        reducer, state_wrapper.val, state_wrapper, middleware or []
+        reducer, state_fetcher, state_wrapper, middleware or []
     )
+
+
+def combine_reducers(
+    *reducers: Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]]
+):
+    """
+    Combine multiple reducers into one reducer.
+    :param reducers: The reducers to combine
+    :return: The combined reducer
+    """
+
+    def combined_reducer(
+        state: dict[str, Any], action: dict[str, Any]
+    ) -> dict[str, Any]:
+        """
+        Combine multiple reducers into one reducer.
+        :param state: The state to use
+        :param action: The action to use
+        :return: The new state
+        """
+        new_state = state
+        for reducer in reducers:
+            new_state = reducer(new_state, action)
+        return new_state
+
+    return combined_reducer

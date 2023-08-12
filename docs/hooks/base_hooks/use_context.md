@@ -7,7 +7,7 @@ Differentiating from the rest of the basic hooks, `use_context` comes along with
 `set_context_value` is used to set the context value.
 
 Context, like all hooks, is affected by scoping. This means that context is only accessible within the scope of the function that created (!) it.
-Read more about scoping hooks with [hooks_scope](../scoping/hooks_scope.md) decorator.
+Read more about scoping hooks with [hooks_scope](../scoping/scope_decorator.md) decorator.
 
 ---
 ### Creating and using a context
@@ -75,4 +75,4 @@ It is also used as a building block for plugins like `Zustand` and `Redux`.
 
 Learn about [additional hooks](../additional_hooks/use_reducer.md).
 
-Learn about scoping hooks with [hooks_scope](../scoping/hooks_scope.md) decorator. 
+Learn about scoping hooks with [hooks_scope](../scoping/scope_decorator.md) decorator. 

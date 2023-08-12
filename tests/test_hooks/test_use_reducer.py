@@ -4,7 +4,7 @@ from typing import Any, Callable
 
 from unittest.mock import Mock
 
-from hooks.reducers import use_reducer
+from hooks.reducers import combine_reducers, use_reducer
 
 
 def test_simple_state_mutation() -> None:
@@ -64,3 +64,28 @@ def test_simple_state_mutation_multiple_calls() -> None:
     state, dispatch = use_reducer(tasks_reducer)
 
     assert state == {"tasks": ["Do the dishes"]}, "The new state should be mutated"
+
+
+def test_combine_reducers() -> None:
+    def tasks_reducer(current_state: dict, action: dict) -> dict:
+        if action["type"] == "ADD_TASK":
+            return {"tasks": current_state["tasks"] + [action["task"]]}
+        return current_state
+
+    def user_reducer(current_state: dict, action: dict) -> dict:
+        if action["type"] == "SET_USER":
+            return {"user": action["user"]}
+        return current_state
+
+    combined_reducer = combine_reducers(tasks_reducer, user_reducer)
+    state, dispatch = use_reducer(combined_reducer, {"tasks": [], "user": None})
+
+    dispatch({"type": "ADD_TASK", "task": "Do the dishes"})
+    dispatch({"type": "SET_USER", "user": "John Doe"})
+
+    state, _ = use_reducer(combined_reducer)
+
+    assert state == {
+        "tasks": ["Do the dishes"],
+        "user": "John Doe",
+    }, "The new state should be mutated"
