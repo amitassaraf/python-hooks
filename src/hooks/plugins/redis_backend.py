@@ -7,7 +7,7 @@ try:
     import dill as pickle
     import redis
 
-    class RedisHooksBackend(HooksBackend):
+    class RedisBackend(HooksBackend):
         redis_client = None
 
         @classmethod

@@ -1,11 +1,11 @@
 from flask import Flask
 
 from hooks import hook_scope, use_state
-from hooks.plugins.redis_backend import RedisHooksBackend
+from hooks.plugins.redis_backend import RedisBackend
 
 app = Flask(__name__)
 
-RedisHooksBackend.use("localhost", 6379)
+RedisBackend.use("localhost", 6379)
 
 
 @app.route("/")
