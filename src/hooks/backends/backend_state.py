@@ -1,6 +1,6 @@
 from typing import Any
 
-from .pickle_backend import PickleHooksBackend as DefaultHooksBackend
+from .memory_backend import MemoryBackend as DefaultHooksBackend
 
 BACKEND_KEY = "__hooks_backend__"
 

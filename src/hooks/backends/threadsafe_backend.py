@@ -12,7 +12,7 @@ threading_local = threading.local()
 BACKEND_KEY = "__hooks_backend__"
 
 
-class ThreadsafeHooksBackend(HooksBackend):
+class ThreadsafeBackend(HooksBackend):
     @classmethod
     def load(cls, identifier: str) -> Any:
         return pickle.loads(getattr(threading_local, BACKEND_KEY + identifier, None))

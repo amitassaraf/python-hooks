@@ -9,7 +9,7 @@ T = TypeVar("T")
 BACKEND_KEY = "__hooks_backend__"
 
 
-class PickleHooksBackend(HooksBackend):
+class MemoryBackend(HooksBackend):
     @classmethod
     def load(cls, identifier: str) -> Any:
         return pickle.loads(globals().get(BACKEND_KEY + identifier))

@@ -26,7 +26,7 @@ nav:
       - Default Scoping: scoping/default_scoping.md
       - Scope Decorator: scoping/scope_decorator.md
   - 'Backends':
-      - Default: backends/default.md
+      - What are backends: backends/default.md
   - 'Plugins':
       - Zustand: plugins/zustand.md
 
