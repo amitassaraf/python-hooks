@@ -1,6 +1,6 @@
 # mypy: ignore-errors
 
-from typing import Any, Callable, TypeVar
+from typing import Any, Callable, Optional, TypeVar, Union
 
 from .backends import get_hooks_backend
 from .frame_utils import __identify_hook_and_backend
@@ -29,13 +29,26 @@ def use_state(default_value: T) -> tuple[T, Callable[[Any], Any]]:
     return state_wrapper.val, state_wrapper
 
 
-def use_effect(callback: Callable[[], Any], dependencies: list[Any]) -> None:
+def use_effect(
+    callback: Optional[Callable[[], Any]] = None,
+    dependencies: Optional[list[Any]] = None,
+    decorating: Optional[bool] = False,
+) -> Union[Callable[[Callable[[], Any]], Callable[[], None]], None]:
     """
     Create an effect hook. The callback will be called when the dependencies change.
     :param callback: The callback to call when the dependencies change
     :param dependencies: The dependencies to watch for changes
+    :param decorating: Whether the use_effect hook is currently used as a decorator
     :return: None
     """
+    if decorating:
+
+        def decorator(decorated_callback: Callable[[], Any]) -> Callable[[], None]:
+            use_effect(decorated_callback, dependencies)
+            return decorated_callback
+
+        return decorator
+
     saved_dependencies, set_dependencies = use_state(dependencies)
     has_ran, set_initial_ran = use_state(False)
     if saved_dependencies != dependencies or not has_ran:
