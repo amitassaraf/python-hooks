@@ -153,4 +153,4 @@ print(NestedStates().local_state("A"))  # Output: 0
 
 ### Next steps
 
-Learn about [backends](../backends/scope_decorator.md).
+Learn about [backends](../backends/default.md).
