@@ -80,16 +80,18 @@ As Python is commonly used to create APIs, I wanted to provide one real-world ex
 
 ### Pretty neat, right?
 
-## 🎯 What's next
-
-Well, that's up to you 💪🏻. We are looking for contributors to help us build this project and make it better. If you are interested in contributing, please reach out to me on [Discord](https://discord.gg/c9MhzV8aU5) or open an issue. 
-In addition we are looking for plugin developers to help us build more plugins for different state stores.
 
 ## 🚀 Installation
 
 ```bash
 pip install python-hooks
 ```
+
+## 🎯 What's next
+
+Well, that's up to you 💪🏻. We are looking for contributors to help us build this project and make it better. If you are interested in contributing, please reach out to me on [Discord](https://discord.gg/c9MhzV8aU5) or open an issue. 
+In addition we are looking for plugin developers to help us build more plugins for different state stores.
+
 ## 📈 Releases
 
 You can see the list of available releases on the [GitHub Releases](https://github.com/amitassaraf/python-hooks/releases) page.
