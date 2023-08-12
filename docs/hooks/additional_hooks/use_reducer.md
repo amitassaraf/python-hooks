@@ -31,6 +31,32 @@ The dispatch function can be used to dispatch actions from anywhere in the appli
 in a centralised location. In addition, the use_reducer hook can be used multiple times in the same application and 
 even in the same function. It knows to identify the correct state to update based on the reducer function passed in.
 
+---
+### Accessing the state in separate functions
+
+```python
+from hooks import use_reducer
+
+
+def tasks_reducer(current_state: dict, action: dict) -> dict:
+  if action["type"] == "ADD_TASK":
+    return {"tasks": current_state["tasks"] + [action["task"]]}
+  return current_state
+
+
+def add_task(task: str):
+  state, dispatch = use_reducer(tasks_reducer, {"tasks": []})
+  dispatch({"type": "ADD_TASK", "task": task})
+
+def get_tasks():
+  state, dispatch = use_reducer(tasks_reducer)
+  return state["tasks"]
+
+add_task("Do the dishes")
+add_task("Do the laundry")
+print(get_tasks())  # Output: ["Do the dishes", "Do the laundry"]
+```
+
 ### Next steps
 
 Learn about scoping hooks with [hooks_scope](../scoping/hooks_scope.md) decorator.
