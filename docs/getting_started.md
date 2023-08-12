@@ -1,30 +1,31 @@
-# Getting Started
+# 🚀 Getting Started
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+In order to get started with Python Hooks, you need to install the library using pip, note that when installing 
+the library you install it as `python-hooks` and not `hooks` as the latter is already taken in pip. 
 
-## Commands
+```bash
+pip install python-hooks
+```
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+Once installed you can start using the library, the library is built with plugins support and you can use the built-in plugins or create your own.
 
-## Project layout
+```py 
+from hooks import use_state, use_effect
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+def my_stateful_function():
+    count, set_count = use_state(0)
+    use_effect(lambda: print("First run"), [])
+    use_effect(lambda: print(f"Count, {count}"), [count]) # (1)
+    set_count(count + 1) 
+    return count
+
+my_stateful_function() # prints "First run" and "Count, 0"
+my_stateful_function() # prints "Count, 1"
+my_stateful_function() # prints "Count, 2"
+```
+
+1.  🤩 Just like React, use_effect will only run if it's dependencies have changed. In this case, the dependency is the count variable. 
+    This is a very powerful feature as it allows you to control when your code runs.
 
 
-
-### Let's see some more 
-
-One thing which is different from React is that the hooks can be scoped to function arguments. This allows you to have multiple instances of the same function with different state.
-
-<img src="images/scope_example.png" alt="drawing" width="500"/>
-
-In addition, hook state scope will behave exactly like you expect, on instance methods the state will be scoped to the instance, 
-on classmethods it will be scoped to the class, and on staticmethods it will be scoped globally.
-
-<img src="images/state_auto_scope_example.png" alt="drawing" width="500"/>
+See [Hooks](hooks/base_hooks/use_state.md) to begin using the built-in hooks.

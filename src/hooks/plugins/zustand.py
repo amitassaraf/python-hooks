@@ -17,33 +17,29 @@ class ZustandStore:
         store_initial_state: dict[str, Any],
         store_config: Callable[[SetTyping, GetTyping], Any],
     ):
-        self.context = create_context({"state": store_initial_state})
+        self.state_context = create_context(store_initial_state)
+        self.config_context = create_context({})
 
         def setter(state_selector: StateSelector) -> None:
-            inner_state = self.getter()
             set_context_value(
-                self.context,
-                {
-                    "state": state_selector(inner_state.state.to_dict()),
-                    "config": inner_state.config,
-                },
+                self.state_context,
+                state_selector(use_context(self.state_context)),
             )
 
         def getter() -> Box:
-            return Box(use_context(self.context))
+            return Box(
+                {**use_context(self.state_context), **use_context(self.config_context)}
+            )
 
         self.setter = setter
         self.getter = getter
         set_context_value(
-            self.context,
-            {**self.getter(), "config": store_config(self.setter, self.getter)},
+            self.config_context,
+            store_config(self.setter, self.getter),
         )
 
     def __call__(self, selector: StateSelector) -> Any:
-        inner_state = self.getter()
-        return selector(
-            Box({**inner_state.state.to_dict(), **inner_state.config.to_dict()})
-        )
+        return selector(self.getter())
 
 
 def create(

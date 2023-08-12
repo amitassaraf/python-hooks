@@ -7,7 +7,9 @@ from typing import Any, Callable
 
 import sys
 
-from .backend import HooksBackend, get_hooks_backend, python_object_backend_factory
+from .backends import get_hooks_backend
+from .backends.interface import HooksBackend
+from .backends.python_objects_backend import python_object_backend_factory
 from .scope import HOOKED_FUNCTION_ATTRIBUTE, _hook_scope_manager
 
 SPECIAL_HOOKS = ["create_context"]
@@ -97,10 +99,9 @@ def __identify_hook_and_backend(
     ) and frame.f_code.co_name not in SPECIAL_HOOKS:
         # We add a prefix to the identifier to ensure that the identifier is unique and that we can use hooks inside
         # hooks
-        if not frame.f_globals["__name__"].startswith("hooks."):
-            identifier_prefix += __frame_parts_to_identifier(
-                frame.f_code.co_filename, frame.f_lineno, frame.f_code.co_name
-            )
+        identifier_prefix += __frame_parts_to_identifier(
+            frame.f_code.co_filename, frame.f_lineno, frame.f_code.co_name
+        )
         frame = frame.f_back
 
     frame_identifier = identifier_prefix + __frame_parts_to_identifier(

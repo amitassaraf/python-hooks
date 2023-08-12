@@ -1,8 +1,41 @@
 site_name: Python Hooks
 theme:
+  logo: images/favicon.ico
   name: material
   favicon: images/favicon.ico
   palette:
     scheme: slate
     primary: red
     accent: pink
+  features:
+    - content.code.copy
+    - content.code.annotate
+    - navigation.expand
+nav:
+  - Overview: index.md
+  - Inspiration: inspiration.md
+  - Getting started: getting_started.md
+  - 'Hooks':
+      - 'Base Hooks':
+        - use_state Hook: hooks/base_hooks/use_state.md
+        - use_effect Hook: hooks/base_hooks/use_effect.md
+        - use_context Hook: hooks/base_hooks/use_context.md
+      - 'Additional Hooks':
+        - use_reducer Hook: hooks/additional_hooks/use_reducer.md
+        - use_memo Hook: hooks/additional_hooks/use_memo.md
+  - 'Scoping':
+      - Default Scoping: scoping/default_scoping.md
+      - Scope Decorator: scoping/scope_decorator.md
+  - 'Backends':
+      - Default: backends/default.md
+  - 'Plugins':
+      - Zustand: plugins/zustand.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

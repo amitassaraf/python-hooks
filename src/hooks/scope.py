@@ -2,11 +2,10 @@
 
 from typing import Any, Callable, Optional
 
+from contextlib import contextmanager
 from functools import wraps
 
 HOOKED_FUNCTION_ATTRIBUTE = "__hooked_function__"
-
-from contextlib import contextmanager
 
 
 @contextmanager
