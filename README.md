@@ -35,6 +35,8 @@
 <a href="https://github.com/amitassaraf/python-hooks">
   <img alt="Made with love by Amit Assaraf" src="https://img.shields.io/badge/made_with_❤️_by-amitassaraf-red?color=ff1744" />
 </a>
+<br/>
+If you like this project, consider starring it on Github ⭐⭐⭐⭐  
 </div>
 <br/>
 
