@@ -1,11 +1,11 @@
-from typing import Any, Callable, Union
+from typing import Any, Callable, Optional, Tuple, Union
 
 from .use import use_state
 
 
 def __dispatch_factory(
     reducer: Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]],
-    state: dict[str, Any],
+    state: Optional[dict[str, Any]],
     set_state: Callable[[dict[str, Any]], Any],
     middleware: Union[
         list[
@@ -65,7 +65,7 @@ def __dispatch_factory(
 
 def use_reducer(
     reducer: Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]],
-    initial_state: dict[str, Any],
+    initial_state: Optional[dict[str, Any]] = None,
     middleware: Union[
         list[
             Callable[

@@ -49,7 +49,7 @@ def use_effect(
 
         return decorator
 
-    saved_dependencies, set_dependencies = use_state(dependencies)
+    saved_dependencies, set_dependencies = use_state(dependencies or [])
     has_ran, set_initial_ran = use_state(False)
     if saved_dependencies != dependencies or not has_ran:
         set_dependencies(dependencies)

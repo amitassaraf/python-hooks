@@ -11,7 +11,7 @@ try:
         redis_client = None
 
         @classmethod
-        def use(cls, host: str, port: int, **kwargs: Any) -> Any:
+        def use(cls, host: str, port: int, *args: Any, **kwargs: Any) -> Any:
             cls.redis_client = redis.Redis(host=host, port=port, **kwargs)
             super().use(**kwargs)
             return cls

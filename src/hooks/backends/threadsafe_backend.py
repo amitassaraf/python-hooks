@@ -29,8 +29,8 @@ class ThreadsafeHooksBackend(HooksBackend):
     @classmethod
     def reset_backend(cls) -> None:
         keys = []
-        for key, value in threading_local.__dict__.items():  # type: ignore
-            if key.startswith(BACKEND_KEY):  # type: ignore
+        for key, value in threading_local.__dict__.items():
+            if key.startswith(BACKEND_KEY):
                 keys.append(key)
         for key in keys:
-            del threading_local.__dict__[key]  # type: ignore
+            del threading_local.__dict__[key]
