@@ -12,7 +12,7 @@ to developers coming from the JavaScript world and to provide a simple way to ma
 It is meant to help write better data-driven code and to help developers focus on the business logic of their code rather than on the plumbing.
 
 
-[**Discord**](https://discord.gg/mayParnv) | [**Docs**](https://beta.ruff.rs/docs/) 
+[**Discord**](https://discord.gg/mayParnv) | [**Github**](https://github.com/amitassaraf/python-hooks) 
 
 <img src="https://img.shields.io/badge/⚠️ Not_recommended_for_production_use_just_yet-ff9966" />
 
