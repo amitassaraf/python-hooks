@@ -1,0 +1,8 @@
+site_name: Python Hooks
+theme:
+  name: material
+  favicon: images/favicon.ico
+  palette:
+    scheme: slate
+    primary: red
+    accent: pink

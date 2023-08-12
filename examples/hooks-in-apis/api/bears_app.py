@@ -1,13 +1,11 @@
 from flask import Flask
 
-from hooks.backend import set_hooks_backend
 from hooks.plugins.redis_backend import RedisHooksBackend
 from hooks.plugins.zustand import create
 
 app = Flask(__name__)
 
-RedisHooksBackend.initialize("localhost", 6379)
-set_hooks_backend(RedisHooksBackend)
+RedisHooksBackend.use("localhost", 6379)
 
 use_bear_store = create(
     {

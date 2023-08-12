@@ -12,6 +12,11 @@ BACKEND_KEY = "__hooks_backend__"
 
 class HooksBackend(SimpleNamespace):
     @classmethod
+    def use(cls, *args, **kwargs: Any) -> Any:
+        set_hooks_backend(cls)
+        return cls
+
+    @classmethod
     def load(cls, identifier: str) -> Any:
         raise NotImplemented
 
