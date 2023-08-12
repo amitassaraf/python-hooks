@@ -36,6 +36,7 @@
   <img alt="Made with love by Amit Assaraf" src="https://img.shields.io/badge/made_with_❤️_by-amitassaraf-red?color=ff1744" />
 </a>
 </div>
+<br/>
 
 * ⚡️ Written with performance in mind __(Not using inspect module)__
 * 🐍 Support for familiar React like hooks such as `use_state`, `use_effect`, `use_reducer`, `use_context` and more.
@@ -63,11 +64,11 @@ to developers coming from the JavaScript world and to provide a simple way to ma
 It is meant to help write better data-driven code and to help developers focus on the business logic of their code rather than on the plumbing.
 
 
-[**Discord**](https://discord.gg/c9MhzV8aU5) | [**Docs**](https://beta.ruff.rs/docs/) 
+[**Discord**](https://discord.gg/mayParnv) | [**Docs**](https://beta.ruff.rs/docs/) 
 
 <img src="https://img.shields.io/badge/⚠️ Not_recommended_for_production_use_just_yet-ff9966" />
 
-Note: This project is still in beta and is not recommended for production use just yet. We are working on adding more tests and improving the documentation. If you are interested in contributing, please reach out to me on [Discord](https://discord.gg/c9MhzV8aU5).
+Note: This project is still in beta and is not recommended for production use just yet. We are working on adding more tests and improving the documentation. If you are interested in contributing, please reach out to me on [Discord](https://discord.gg/mayParnv).
 
 ---
 
@@ -89,7 +90,7 @@ pip install python-hooks
 
 ## 🎯 What's next
 
-Well, that's up to you 💪🏻. We are looking for contributors to help us build this project and make it better. If you are interested in contributing, please reach out to me on [Discord](https://discord.gg/c9MhzV8aU5) or open an issue. 
+Well, that's up to you 💪🏻. We are looking for contributors to help us build this project and make it better. If you are interested in contributing, please reach out to me on [Discord](https://discord.gg/mayParnv) or open an issue. 
 In addition we are looking for plugin developers to help us build more plugins for different state stores.
 
 ## 📈 Releases
