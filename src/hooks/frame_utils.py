@@ -7,7 +7,7 @@ from typing import Any, Callable
 
 import sys
 
-from .backends import get_hooks_backend
+from .backends.backend_state import get_hooks_backend
 from .backends.interface import HooksBackend
 from .backends.python_objects_backend import python_object_backend_factory
 from .scope import HOOKED_FUNCTION_ATTRIBUTE, _hook_scope_manager

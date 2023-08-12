@@ -7,7 +7,7 @@ T = TypeVar("T")
 class HooksBackend(SimpleNamespace):
     @classmethod
     def use(cls, *args: Any, **kwargs: Any) -> Any:
-        from . import set_hooks_backend
+        from .backend_state import set_hooks_backend
 
         set_hooks_backend(cls)
         return cls

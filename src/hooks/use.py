@@ -2,7 +2,7 @@
 
 from typing import Any, Callable, Optional, TypeVar, Union
 
-from .backends import get_hooks_backend
+from .backends.backend_state import get_hooks_backend
 from .frame_utils import __identify_hook_and_backend
 
 T = TypeVar("T")

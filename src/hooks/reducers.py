@@ -1,6 +1,6 @@
-from typing import Any, Callable, Optional, Tuple, Union
+from typing import Any, Callable, Optional, Union
 
-from .use import use_state
+from .backends.backend_state import get_hooks_backend
 
 
 def __dispatch_factory(
@@ -82,5 +82,21 @@ def use_reducer(
     :param middleware: The middlewares to use in order, if any
     :return: The state and the dispatch function
     """
-    state, set_state = use_state(initial_state)
-    return state, __dispatch_factory(reducer, state, set_state, middleware or [])
+    _backend = get_hooks_backend()
+    identifier = reducer.__module__ + (reducer.__qualname__ or reducer.__name__)
+
+    def state_wrapper(value) -> None:
+        state_wrapper.val = value
+        _backend.save(identifier, value)
+
+    if _backend.exists(identifier):
+        loaded_value = _backend.load(identifier)
+        state_wrapper.val = loaded_value
+        return state_wrapper.val, __dispatch_factory(
+            reducer, state_wrapper.val, state_wrapper, middleware or []
+        )
+
+    state_wrapper(initial_state)
+    return state_wrapper.val, __dispatch_factory(
+        reducer, state_wrapper.val, state_wrapper, middleware or []
+    )
