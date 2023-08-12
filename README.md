@@ -112,6 +112,25 @@ We use [`Release Drafter`](https://github.com/marketplace/actions/release-drafte
 
 GitHub creates the `bug`, `enhancement`, and `documentation` labels for you. Dependabot creates the `dependencies` label. Create the remaining labels on the Issues tab of your GitHub repository, when you need them.
 
+
+## 📋 Roadmap
+
+- [ ] Finish documentation
+- [ ] Develop state-debugger plugin
+- [ ] Add redux plugin
+- [ ] Additional hooks
+    - [ ] use_ref 
+- [ ] Test and adapt to PyPy, Jython, IronPython
+- [ ] Support for more hook backends
+    - [ ] MongoDB
+    - [ ] Postgres
+    - [ ] MySQL
+    - [ ] SQLite
+    - [ ] File
+- [ ] More tests
+
+See the [open issues](https://github.com/amitassaraf/python-hooks/issues) for a full list of proposed features (and known issues).
+
 ## 🛡 License
 
 [![License](https://img.shields.io/github/license/amitassaraf/python-hooks)](https://github.com/amitassaraf/python-hooks/blob/master/LICENSE)
