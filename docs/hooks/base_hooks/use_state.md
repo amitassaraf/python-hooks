@@ -34,7 +34,7 @@ print(my_stateful_function()) # Output: 2
 
 As you can see, the state is persisted between function calls. This is because the state is stored in the function's scope.
 By default, the state is persisted only for the duration of the program. If you run the program again, the state will be reset.
-State may be persisted for longer periods of time by using a different [backend](../../backends/README.md).
+State may be persisted for longer periods of time by using a different [backend](../../backends/default.md).
 ---
 ### Multiple state hooks
 
@@ -116,7 +116,7 @@ You can name them whatever you want.
 
 The `use_state` hook is currently not threadsafe. The reason being that the default backend is not threadsafe in order
 to maximize compatibility with different frameworks such as Flask. If you need to use `use_state` in a 
-multithreaded environment you should use the `threadsafe` backend. See [Backends](../../backends/README.md) for more information.
+multithreaded environment you should use the `threadsafe` backend. See [Backends](../../backends/default.md) for more information.
 
 ---
 ### Next steps
