@@ -135,4 +135,6 @@ function will then combine the results of each reducer function into a single st
 ---
 ### Next steps
 
+Learn about creating [custom hooks](custom_hooks.md).
+
 Learn about scoping hooks with [hooks_scope](../scoping/scope_decorator.md) decorator.

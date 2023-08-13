@@ -22,6 +22,7 @@ nav:
         - use_context Hook: hooks/base_hooks/use_context.md
       - 'Additional Hooks':
         - use_reducer Hook: hooks/additional_hooks/use_reducer.md
+        - Custom Hooks: hooks/additional_hooks/custom_hooks.md
   - 'Scoping':
       - Default Scoping: scoping/default_scoping.md
       - Scope Decorator: scoping/scope_decorator.md
