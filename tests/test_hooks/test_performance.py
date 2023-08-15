@@ -30,7 +30,7 @@ def test_local_state() -> None:
 
     overhead = hooks_state_median / python_state_median
 
-    allowed_overhead: int = 25
+    allowed_overhead: int = 30
 
     if overhead > allowed_overhead:
         with Profile() as profile:

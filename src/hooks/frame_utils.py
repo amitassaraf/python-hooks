@@ -7,6 +7,8 @@ from typing import Any, Callable
 
 import sys
 
+from pyhashxx import hashxx
+
 from .backends.backend_state import get_hooks_backend
 from .backends.interface import HooksBackend
 from .backends.python_objects_backend import python_object_backend_factory
@@ -134,11 +136,11 @@ def __identify_hook_and_backend(
     if (not is_method and not is_class_method) or always_global_backend:
         _backend = get_hooks_backend()
         return (
-            f"{prefix}{frame_identifier}",
+            str(hashxx(f"{prefix}{frame_identifier}".encode())),
             _backend,
         )
 
     return (
-        f"{prefix}{frame_identifier}{frame.f_code.co_name}",
+        str(hashxx(f"{prefix}{frame_identifier}{frame.f_code.co_name}".encode())),
         python_object_backend_factory(owner),
     )
