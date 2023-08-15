@@ -7,7 +7,7 @@ from hooks import use_reducer
 global _redux_root_reducer
 
 
-def set_redux_store(
+def create_redux_store(
     reducer: Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]],
     initial_state: dict[str, Any],
 ) -> None:

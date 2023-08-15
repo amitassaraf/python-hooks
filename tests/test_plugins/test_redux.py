@@ -1,5 +1,5 @@
 from hooks import combine_reducers
-from hooks.plugins.redux import set_redux_store, use_dispatch, use_selector
+from hooks.plugins.redux import create_redux_store, use_dispatch, use_selector
 
 
 def tasks_reducer(current_state: dict, action: dict) -> dict:
@@ -15,7 +15,7 @@ def user_reducer(current_state: dict, action: dict) -> dict:
 
 
 combined_reducer = combine_reducers(tasks_reducer, user_reducer)
-set_redux_store(combined_reducer, {"tasks": [], "user": None})
+create_redux_store(combined_reducer, {"tasks": [], "user": None})
 
 
 def test_basic_get_and_set() -> None:
