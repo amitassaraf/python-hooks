@@ -41,3 +41,7 @@ def destruct(wrapped_object: Any) -> __Destruct:
     :return: A __Destruct object that can be used to destructure the wrapped object
     """
     return __Destruct(wrapped_object)
+
+
+# Alias for destruct
+d = destruct

@@ -30,6 +30,7 @@ nav:
       - What are backends: backends/default.md
   - 'Plugins':
       - Zustand: plugins/zustand.md
+      - Redux: plugins/redux.md
 
 markdown_extensions:
   - pymdownx.highlight:

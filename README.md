@@ -47,7 +47,7 @@ If you like this project, consider starring it on Github ⭐⭐⭐⭐
 * 🪶 Lightweight to remove the need for a lot of boilerplate code.
 * 📦 Support for different backend state-stores.
 * 🔧 Support for hooks-state scoping.
-* 🌎 Redis and Zustand plugins out of the box. 
+* 🌎 Redis, Redux, and Zustand plugins out of the box. 
 * 🔌 Tested mainly on CPython.
 
 ---
@@ -121,9 +121,9 @@ GitHub creates the `bug`, `enhancement`, and `documentation` labels for you. Dep
 ## 📋 Roadmap
 
 - [x] Finish documentation
-- [ ] Improve frame identifier without hurting performance
+- [x] Improve frame identifier without hurting performance
 - [ ] Develop state-debugger plugin
-- [ ] Add redux plugin
+- [x] Add redux plugin
 - [ ] Async support ⚡
 - [ ] Additional hooks
     - [ ] use_ref 

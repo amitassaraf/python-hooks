@@ -1,5 +1,7 @@
 from typing import Any, Callable, Optional, Union
 
+from functools import wraps
+
 from .backends.backend_state import get_hooks_backend
 
 
@@ -96,7 +98,7 @@ def use_reducer(
         loaded_value = _backend.load(identifier)
         state_wrapper.val = loaded_value
         return state_wrapper.val, __dispatch_factory(
-            reducer, state_wrapper.val, state_wrapper, middleware or []
+            reducer, state_fetcher, state_wrapper, middleware or []
         )
 
     state_wrapper(initial_state)
@@ -114,6 +116,7 @@ def combine_reducers(
     :return: The combined reducer
     """
 
+    @wraps(reducers[0])
     def combined_reducer(
         state: dict[str, Any], action: dict[str, Any]
     ) -> dict[str, Any]:
