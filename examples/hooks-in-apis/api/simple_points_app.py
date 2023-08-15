@@ -16,7 +16,7 @@ def get_app_points():
 
 
 @app.route("/user/<username>")
-@hook_scope(limit_to_keys=["username"])
+@hook_scope(parametrize=["username"])
 def get_user_points(username: str):
     user_points, set_user_points = use_state(0)
     set_user_points(user_points + 1)

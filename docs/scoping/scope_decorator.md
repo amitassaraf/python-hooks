@@ -17,7 +17,7 @@ state based on function parameters.
 from hooks import use_state, hook_scope
 
 
-@hook_scope(limit_to_keys=["owner"])
+@hook_scope(parametrize=["owner"])
 def owned_counter(owner: str):
     count, set_count = use_state(0)
     set_count(count + 1)
@@ -29,7 +29,7 @@ owned_counter("Jane")  # Output: Jane's count is 0
 owned_counter("Jane")  # Output: Jane's count is 1
 ```
 
-Note that you do not have to provide a value for the `limit_to_keys` parameter. If you do not provide a value, the hook
+Note that you do not have to provide a value for the `parametrize` parameter. If you do not provide a value, the hook
 will be scoped to all function parameters.
 
 ```python
@@ -60,7 +60,7 @@ from hooks import use_state, hook_scope
 
 
 class CounterClass:
-    @hook_scope(use_global_scope=True, limit_to_keys=[])
+    @hook_scope(use_global_scope=True, parametrize=[])
     def instance_method_scoped_globally(self):
         count, set_count = use_state(0)
         set_count(count + 1)
@@ -82,7 +82,7 @@ print(counter_two.instance_method_scoped_globally())  # Output: 1
 
 ```
 
-Note that when using `use_global_scope=True`, you have to provide a value for the `limit_to_keys` parameter. You may
+Note that when using `use_global_scope=True`, you have to provide a value for the `parametrize` parameter. You may
 provide an empty list if you want to scope the hook to no parameters.
 
 
@@ -101,7 +101,7 @@ class NestedStates:
         set_counter(counter + 1)
         return counter
 
-    @hook_scope(limit_to_keys=["counter_name"])
+    @hook_scope(parametrize=["counter_name"])
     def local_state(self, counter_name: str) -> int:
         return self.nested_state()
 
@@ -132,7 +132,7 @@ class NestedStates:
         set_counter(counter + 1)
         return counter
   
-    @hook_scope(limit_to_keys=["counter_name"])
+    @hook_scope(parametrize=["counter_name"])
     def local_state(self, counter_name: str) -> int:
         return self.nested_state_with_scope()
 
