@@ -124,7 +124,7 @@ GitHub creates the `bug`, `enhancement`, and `documentation` labels for you. Dep
 - [x] Improve frame identifier without hurting performance
 - [ ] Develop state-debugger plugin
 - [x] Add redux plugin
-- [ ] Async support ⚡
+- [x] Async support ⚡
 - [ ] Additional hooks
     - [ ] use_ref 
 - [ ] Test and adapt to PyPy, Jython, IronPython
