@@ -11,7 +11,7 @@ HOOKED_FUNCTION_ATTRIBUTE = "__hooked_function__"
 @contextmanager
 def _hook_scope_manager(
     wrapped: Callable[[Any], Any],
-    limit_to_keys: Optional[list[str]] = None,
+    parametrize: Optional[list[str]] = None,
     *args: Any,
     **kwargs: dict[str, Any],
 ) -> None:
@@ -19,7 +19,7 @@ def _hook_scope_manager(
     A context manager to manage the scope of hooks. This is used to identify the scope of hooks and to limit the scope
     of hooks to the function and keys.
     :param wrapped: The function that is being wrapped
-    :param limit_to_keys: The keys to limit the scope to
+    :param parametrize: The keys to limit the scope to
     :param args: The args of the function
     :param kwargs: The kwargs of the function
     """
@@ -28,11 +28,11 @@ def _hook_scope_manager(
     identifier = ""
 
     # We get the names of the arguments as sometimes they are not passed as kwargs and we need to identify
-    # them in order to see if they are in the limit_to_keys.
+    # them in order to see if they are in the parametrize.
     args_names = wrapped.__code__.co_varnames[: wrapped.__code__.co_argcount]
 
     for key, value in [*kwargs.items(), *list(zip(args_names, args))]:
-        if limit_to_keys is None or key in limit_to_keys:
+        if parametrize is None or key in parametrize:
             identifier += f"{key}:{value};"
     _hook_scope_manager.current_identifier.append(f"{wrapped.__qualname__}{identifier}")
     try:
@@ -46,20 +46,20 @@ _hook_scope_manager.current_identifier = []
 
 
 def hook_scope(
-    limit_to_keys: Optional[list[str]] = None, use_global_scope: Optional[bool] = False
+    parametrize: Optional[list[str]] = None, use_global_scope: Optional[bool] = False
 ) -> Callable[[Any], Any]:
     """
     Create a scope for all hooks in the scope. The scope will be added to the hook identifiers to allow for state to
     be scoped either per the function and below or by the function and keys.
-    :param limit_to_keys: The keys to limit the scope to.
+    :param parametrize: The keys to limit the scope to.
     :param use_global_scope: If True, the scope and all hooks will be persisted globally and will not be limited to the
      instance. If this is True, you must specify the keys to limit the scope to because we cannot identify the self / cls
         argument automatically.
     """
 
-    if use_global_scope and limit_to_keys is None:
+    if use_global_scope and parametrize is None:
         raise ValueError(
-            "You must specify the keys to limit the state to (limit_to_keys) if you want to use global "
+            "You must specify the keys to limit the state to (parametrize) if you want to use global "
             "scope, if your function only has self or cls as arguments, you can use an empty list '[]'."
         )
 
@@ -72,7 +72,7 @@ def hook_scope(
             @wraps(__hooked_function__)
             async def wrapper(*args, **kwargs) -> Any:
                 with _hook_scope_manager(
-                    __hooked_function__, limit_to_keys, *args, **kwargs
+                    __hooked_function__, parametrize, *args, **kwargs
                 ):
                     return await __hooked_function__(*args, **kwargs)
 
@@ -81,7 +81,7 @@ def hook_scope(
             @wraps(__hooked_function__)
             def wrapper(*args, **kwargs) -> Any:
                 with _hook_scope_manager(
-                    __hooked_function__, limit_to_keys, *args, **kwargs
+                    __hooked_function__, parametrize, *args, **kwargs
                 ):
                     return __hooked_function__(*args, **kwargs)
 

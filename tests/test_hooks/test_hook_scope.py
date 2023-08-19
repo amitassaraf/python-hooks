@@ -5,7 +5,7 @@ from hooks.use import use_state
 
 def test_local_state() -> None:
     class Foo:
-        @hook_scope(limit_to_keys=["counter_name"])
+        @hook_scope(parametrize=["counter_name"])
         def local_state(self, counter_name: str) -> int:
             counter, set_counter = use_state(0)
             set_counter(counter + 1)
@@ -54,7 +54,7 @@ def test_global_state_without_arguments() -> None:
 def test_class_state() -> None:
     class Bar:
         @classmethod
-        @hook_scope(limit_to_keys=["counter_name"])
+        @hook_scope(parametrize=["counter_name"])
         def class_state(cls, counter_name: str) -> int:
             counter, set_counter = use_state(0)
             set_counter(counter + 1)
@@ -75,7 +75,7 @@ def test_hook_scope_of_nested_functions() -> None:
             set_counter(counter + 1)
             return counter
 
-        @hook_scope(limit_to_keys=["counter_name"])
+        @hook_scope(parametrize=["counter_name"])
         def local_state(self, counter_name: str) -> int:
             return self.nested_state()
 
@@ -98,7 +98,7 @@ def test_nested_hook_scopes() -> None:
             set_counter(counter + 1)
             return counter
 
-        @hook_scope(limit_to_keys=["counter_name"])
+        @hook_scope(parametrize=["counter_name"])
         def local_state(self, counter_name: str) -> int:
             return self.nested_state_with_scope()
 
@@ -115,7 +115,7 @@ def test_nested_hook_scopes() -> None:
 
 def test_local_state_that_is_scoped_globally() -> None:
     class Foo:
-        @hook_scope(use_global_scope=True, limit_to_keys=[])
+        @hook_scope(use_global_scope=True, parametrize=[])
         def local_state(self) -> int:
             counter, set_counter = use_state(0)
             set_counter(counter + 1)
@@ -136,7 +136,7 @@ def test_local_state_that_is_scoped_globally() -> None:
 
 async def test_local_state_async(async_backend) -> None:
     class Foo:
-        @hook_scope(limit_to_keys=["counter_name"])
+        @hook_scope(parametrize=["counter_name"])
         async def local_state(self, counter_name: str) -> int:
             counter, set_counter = await async_use_state(0)
             await set_counter(counter + 1)
@@ -185,7 +185,7 @@ async def test_global_state_without_arguments_async(async_backend) -> None:
 async def test_class_state_async(async_backend) -> None:
     class Bar:
         @classmethod
-        @hook_scope(limit_to_keys=["counter_name"])
+        @hook_scope(parametrize=["counter_name"])
         async def class_state(cls, counter_name: str) -> int:
             counter, set_counter = await async_use_state(0)
             await set_counter(counter + 1)
@@ -206,7 +206,7 @@ async def test_hook_scope_of_nested_functions_async(async_backend) -> None:
             await set_counter(counter + 1)
             return counter
 
-        @hook_scope(limit_to_keys=["counter_name"])
+        @hook_scope(parametrize=["counter_name"])
         async def local_state(self, counter_name: str) -> int:
             return await self.nested_state()
 
@@ -229,7 +229,7 @@ async def test_nested_hook_scopes_async(async_backend) -> None:
             await set_counter(counter + 1)
             return counter
 
-        @hook_scope(limit_to_keys=["counter_name"])
+        @hook_scope(parametrize=["counter_name"])
         async def local_state(self, counter_name: str) -> int:
             return await self.nested_state_with_scope()
 
@@ -246,7 +246,7 @@ async def test_nested_hook_scopes_async(async_backend) -> None:
 
 async def test_local_state_that_is_scoped_globally_async(async_backend) -> None:
     class Foo:
-        @hook_scope(use_global_scope=True, limit_to_keys=[])
+        @hook_scope(use_global_scope=True, parametrize=[])
         async def local_state(self) -> int:
             counter, set_counter = await async_use_state(0)
             await set_counter(counter + 1)

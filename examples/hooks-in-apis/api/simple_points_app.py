@@ -16,9 +16,9 @@ async def get_app_points():
 
 
 @app.route("/user/<username>")
-@hook_scope(limit_to_keys=["username"])
-async def get_user_points(username: str):
-    user_points, set_user_points = await use_state(0)
+@hook_scope(parametrize=["username"])
+def get_user_points(username: str):
+    user_points, set_user_points = use_state(0)
     set_user_points(user_points + 1)
     return f"{username} so far got {user_points} points"
 
