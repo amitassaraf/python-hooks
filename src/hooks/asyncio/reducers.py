@@ -1,9 +1,10 @@
 from typing import Any, Callable, Dict, Optional, Union
 
-from collections.abc import Coroutine
+from collections.abc import Awaitable, Coroutine
 from functools import wraps
 
 from ..backends.backend_state import get_hooks_backend
+from ..utils import alambda
 
 
 def __async_dispatch_factory(
@@ -44,23 +45,25 @@ def __async_dispatch_factory(
 
         if inner_middleware is None:
             inner_middleware = []
-        inner_middleware.append(
-            lambda inner_state, _, inner_action: reducer(inner_state, inner_action)
-        )
+
+        async def reducer_wrapper(inner_state, _, inner_action):
+            return reducer(inner_state, inner_action)
+
+        inner_middleware.append(reducer_wrapper)
 
         async def runner(state, middlewares, action):
             current = middlewares.pop(0)
             return await current(
                 state,
-                lambda inner_state, inner_action: await runner(
-                    inner_state, middlewares, inner_action
+                lambda inner_state, inner_action: alambda(
+                    await runner(inner_state, middlewares, inner_action) for _ in "_"
                 ),
                 action,
             )
 
         state_change: dict[str, Any] = await runner(new_state, inner_middleware, action)
         new_state = {**new_state, **state_change}
-        set_state(new_state)
+        await set_state(new_state)
         return new_state
 
     return dispatch
@@ -72,12 +75,13 @@ async def use_reducer(
     middleware: Union[
         list[
             Callable[
-                [dict[str, Any], Callable[[Any], Any], dict[str, Any]], dict[str, Any]
+                [dict[str, Any], Callable[[Any], Any], dict[str, Any]],
+                Awaitable[dict[str, Any]],
             ]
         ],
         None,
     ] = None,
-) -> tuple[dict[str, Any], Callable[[dict[str, Any]], dict[str, Any]]]:
+) -> tuple[dict[str, Any], Callable[[dict[str, Any]], Awaitable[dict[str, Any]]]]:
     """
     Create a reducer hook. The reducer will be called when the dispatch function is called.
     :param reducer: The reducer to use

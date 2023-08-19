@@ -35,7 +35,6 @@ async def use_state(default_value: T) -> tuple[T, Callable[[Any], Any]]:
 async def use_effect(
     callback: Optional[Callable[[], Any]] = None,
     dependencies: Optional[list[Any]] = None,
-    decorating: Optional[bool] = False,
 ) -> Optional[Callable[[Callable[[], Any]], Coroutine[Any, Any, Callable[[], None]]]]:
     """
     Create an effect hook. The callback will be called when the dependencies change.
@@ -44,16 +43,6 @@ async def use_effect(
     :param decorating: Whether the use_effect hook is currently used as a decorator
     :return: None
     """
-    if decorating:
-
-        async def decorator(
-            decorated_callback: Callable[[], Any]
-        ) -> Callable[[], None]:
-            await use_effect(decorated_callback, dependencies)
-            return decorated_callback
-
-        return decorator
-
     saved_dependencies, set_dependencies = await use_state(dependencies or [])
     has_ran, set_initial_ran = await use_state(False)
     if saved_dependencies != dependencies or not has_ran:
