@@ -71,6 +71,7 @@ It is meant to help write better data-driven code and to help developers focus o
 <img src="https://img.shields.io/badge/⚠️ Not_recommended_for_production_use_just_yet-ff9966" />
 
 Note: This project is still in beta and is not recommended for production use just yet. We are working on adding more tests and improving the documentation. If you are interested in contributing, please reach out to me on [Discord](https://discord.gg/mayParnv).
+The biggest challenge right now is to find a way to handle code versioning, as the state is identified by the frame in which it was created. This means that if you change the code, the state will be lost.
 
 ---
 
