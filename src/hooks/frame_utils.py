@@ -11,7 +11,10 @@ from pyhashxx import hashxx
 
 from .backends.backend_state import get_hooks_backend
 from .backends.interface import HooksBackend
-from .backends.python_objects_backend import python_object_backend_factory
+from .backends.python_objects_backend import (
+    async_python_object_backend_factory,
+    python_object_backend_factory,
+)
 from .scope import HOOKED_FUNCTION_ATTRIBUTE, _hook_scope_manager
 
 SPECIAL_HOOKS = ["create_context"]
@@ -69,6 +72,7 @@ def __frame_parts_to_identifier(*args: Any) -> str:
 def __identify_hook_and_backend(
     always_global_backend: bool = False,
     prefix: str = "",
+    using_async: bool = False,
 ) -> tuple[str, type[HooksBackend] | HooksBackend]:
     """
     Identify the hook that called the current function frame and the backend that should be used to backend the hook's
@@ -76,6 +80,7 @@ def __identify_hook_and_backend(
     method, the backend is a PickleBackend. If the hook is called from a function, the backend is a PickleBackend.
     :param always_global_backend: If True, the backend will always be a PickleBackend regardless of the hook's caller
     :param prefix: A prefix to add to the hook identifier
+    :param using_async: Whether the hook is used in an async context
     :return: The hook identifier and the backend that should be used to backend the hook's state
     """
     # The use of _getframe is not ideal, but it is more performant than using inspect.currentframe
@@ -134,7 +139,7 @@ def __identify_hook_and_backend(
 
     # If the hook is called from a method, we use a PythonObjectBackend to backend the hook's state.
     if (not is_method and not is_class_method) or always_global_backend:
-        _backend = get_hooks_backend()
+        _backend = get_hooks_backend(using_async=using_async)
         return (
             str(hashxx(f"{prefix}{frame_identifier}".encode())),
             _backend,
@@ -142,5 +147,7 @@ def __identify_hook_and_backend(
 
     return (
         str(hashxx(f"{prefix}{frame_identifier}{frame.f_code.co_name}".encode())),
-        python_object_backend_factory(owner),
+        python_object_backend_factory(owner)
+        if not using_async
+        else async_python_object_backend_factory(owner),
     )

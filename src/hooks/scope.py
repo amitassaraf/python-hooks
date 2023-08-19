@@ -1,7 +1,7 @@
 # mypy: ignore-errors
-
 from typing import Any, Callable, Optional
 
+import inspect
 from contextlib import contextmanager
 from functools import wraps
 
@@ -67,10 +67,23 @@ def hook_scope(
     def scope_decorator(__hooked_function__) -> Callable[[Any], Any]:
         __hooked_function__.use_global_scope = use_global_scope
 
-        @wraps(__hooked_function__)
-        def wrapper(*args, **kwargs) -> Any:
-            with _hook_scope_manager(__hooked_function__, parametrize, *args, **kwargs):
-                return __hooked_function__(*args, **kwargs)
+        if inspect.iscoroutinefunction(__hooked_function__):
+
+            @wraps(__hooked_function__)
+            async def wrapper(*args, **kwargs) -> Any:
+                with _hook_scope_manager(
+                    __hooked_function__, parametrize, *args, **kwargs
+                ):
+                    return await __hooked_function__(*args, **kwargs)
+
+        else:
+
+            @wraps(__hooked_function__)
+            def wrapper(*args, **kwargs) -> Any:
+                with _hook_scope_manager(
+                    __hooked_function__, parametrize, *args, **kwargs
+                ):
+                    return __hooked_function__(*args, **kwargs)
 
         return wrapper
 

@@ -9,8 +9,8 @@ RedisBackend.use("localhost", 6379)
 
 
 @app.route("/")
-def get_app_points():
-    app_points, set_app_points = use_state(0)
+async def get_app_points():
+    app_points, set_app_points = await use_state(0)
     set_app_points(app_points + 1)
     return f"App so far got {app_points} points"
 

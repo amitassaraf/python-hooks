@@ -45,3 +45,8 @@ def destruct(wrapped_object: Any) -> __Destruct:
 
 # Alias for destruct
 d = destruct
+
+
+# Async lambda
+def alambda(async_iterator):
+    return async_iterator.__anext__()

@@ -2,8 +2,10 @@
 
 from typing import Any, Callable
 
+from collections.abc import Awaitable
 from unittest.mock import Mock
 
+from hooks.asyncio.reducers import use_reducer as async_use_reducer
 from hooks.reducers import combine_reducers, use_reducer
 
 
@@ -89,3 +91,66 @@ def test_combine_reducers() -> None:
         "tasks": ["Do the dishes"],
         "user": "John Doe",
     }, "The new state should be mutated"
+
+
+async def test_simple_state_mutation_async(async_backend) -> None:
+    def tasks_reducer(
+        current_state: dict[str, Any], action: dict[str, Any]
+    ) -> dict[str, Any]:
+        if action["type"] == "ADD_TASK":
+            return {"tasks": current_state["tasks"] + [action["task"]]}
+        return current_state
+
+    state, dispatch = await async_use_reducer(tasks_reducer, {"tasks": []})
+    new_state = await dispatch({"type": "ADD_TASK", "task": "Do the dishes"})
+
+    assert state == {"tasks": []}, "The original state should not be mutated"
+    assert new_state == {"tasks": ["Do the dishes"]}, "The new state should be mutated"
+
+
+async def test_simple_middleware_async(async_backend) -> None:
+    mock = Mock()
+
+    async def logging_middleware(
+        state: dict[str, Any],
+        next: Callable[[Any, Any], Awaitable[Any]],
+        action: dict[str, Any],
+    ) -> dict[str, Any]:
+        mock()
+        new_state: dict[str, Any] = await next(state, action)
+        mock()
+        return new_state
+
+    def tasks_reducer(
+        current_state: dict[str, Any], action: dict[str, Any]
+    ) -> dict[str, Any]:
+        if action["type"] == "ADD_TASK":
+            return {"tasks": current_state["tasks"] + [action["task"]]}
+        return current_state
+
+    state, dispatch = await async_use_reducer(
+        tasks_reducer, {"tasks": []}, [logging_middleware]
+    )
+
+    await dispatch({"type": "ADD_TASK", "task": "Do the dishes"})
+
+    assert mock.call_count == 2
+
+
+async def test_simple_state_mutation_multiple_calls_async(async_backend) -> None:
+    def tasks_reducer(
+        current_state: dict[str, Any], action: dict[str, Any]
+    ) -> dict[str, Any]:
+        if action["type"] == "ADD_TASK":
+            return {"tasks": current_state["tasks"] + [action["task"]]}
+        return current_state
+
+    state, dispatch = await async_use_reducer(tasks_reducer, {"tasks": []})
+
+    await dispatch({"type": "ADD_TASK", "task": "Do the dishes"})
+
+    # .... Other section in the program
+
+    state, dispatch = await async_use_reducer(tasks_reducer)
+
+    assert state == {"tasks": ["Do the dishes"]}, "The new state should be mutated"

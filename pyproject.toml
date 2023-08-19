@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.poetry]
 name = "python-hooks"
-version = "0.1.10"
+version = "0.2.1"
 description = "A React inspired way to code in Python"
 readme = "README.md"
 authors = ["Amit Assaraf <amit.assaraf@gmail.com>"]
@@ -33,9 +33,7 @@ python = "^3.9"
 python-box = {version = "^7.0.1", extras = ["all"]}
 dill = "^0.3.7"
 pyhashxx = "^0.1.3"
-
-typer = {extras = ["all"], version = "^0.4.0"}
-rich = "^10.14.0"
+pytest-asyncio = "^0.21.1"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.1"
@@ -55,6 +53,7 @@ coverage-badge = "^1.1.0"
 pytest-html = "^3.1.1"
 pytest-cov = "^3.0.0"
 mkdocs-material = "^9.1.21"
+anyio = "^3.7.1"
 
 [tool.black]
 # https://github.com/psf/black
