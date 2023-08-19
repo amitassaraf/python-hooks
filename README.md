@@ -123,20 +123,16 @@ GitHub creates the `bug`, `enhancement`, and `documentation` labels for you. Dep
 
 - [x] Finish documentation
 - [x] Improve frame identifier without hurting performance
-- [ ] Handle code versioning (Moving state around)
-- [ ] Develop state-debugger plugin
 - [x] Add redux plugin
 - [x] Async support ⚡
-- [ ] Additional hooks
-    - [ ] use_ref 
+- [ ] Handle code versioning (Moving state around the code) [!]
+- [ ] Develop state-debugger plugin
 - [ ] Test and adapt to PyPy, Jython, IronPython
 - [ ] Support for more hook backends
     - [ ] MongoDB
     - [ ] Postgres
     - [ ] MySQL
     - [ ] SQLite
-    - [ ] File
-- [ ] More tests
 
 See the [open issues](https://github.com/amitassaraf/python-hooks/issues) for a full list of proposed features (and known issues).
 
