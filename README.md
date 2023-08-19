@@ -122,6 +122,7 @@ GitHub creates the `bug`, `enhancement`, and `documentation` labels for you. Dep
 
 - [x] Finish documentation
 - [x] Improve frame identifier without hurting performance
+- [ ] Handle code versioning (Moving state around)
 - [ ] Develop state-debugger plugin
 - [x] Add redux plugin
 - [x] Async support ⚡
