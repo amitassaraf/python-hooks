@@ -31,6 +31,7 @@ nav:
   - 'Plugins':
       - Zustand: plugins/zustand.md
       - Redux: plugins/redux.md
+  - Async Support: async.md
 
 markdown_extensions:
   - pymdownx.highlight:
